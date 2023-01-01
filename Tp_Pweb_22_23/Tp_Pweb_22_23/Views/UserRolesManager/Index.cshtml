@@ -22,6 +22,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Roles)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Activo)
+            </th>
             <th>Action</th>
         </tr>
     </thead>
@@ -32,11 +35,11 @@
                 <td>
                     @if (item.Avatar == null)
                     {
-                        <img id="MyAvatar" class="img-thumbnail" style="height:75px;width:auto" src="~/img/user.png" />
+                        <img id="MyAvatar" class="img-thumbnail" style="height:40px;width:auto" src="~/img/user.png" />
                     }
                     else
                     {
-                        <img id="MyAvatar" class="img-thumbnail" style="height:75px;width:auto"
+                        <img id="MyAvatar" class="img-thumbnail" style="height:40px;width:auto"
                      src="data:image/*;base64,@(Convert.ToBase64String(item.Avatar))" />
                     }
                 </td>
@@ -53,7 +56,14 @@
                     @String.Join(',',  item.Roles)
                 </td>
                 <td>
-                    <a class="btn btn-primary" asp-action="Details" asp-route-userId="@item.UserId">Manage Roles</a>
+                    @using (Html.BeginForm("Talepler", "UserRolesManager", FormMethod.Post))
+                    {
+                    <input id="chk" name="chkeco" asp-for="@item.Activo" asp-route-id="@item.UserId" class="form-check-input" />
+                    <label class="form-check-label" asp-for="@item.Activo">@item.Activo</label>
+                    <input type="submit" value="Submit" />
+                    } 
+               </td>
+                <td>
                 </td>
             </tr>
         }

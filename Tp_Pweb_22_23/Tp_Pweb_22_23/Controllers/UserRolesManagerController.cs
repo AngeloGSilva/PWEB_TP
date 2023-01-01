@@ -19,6 +19,20 @@ namespace Tp_Pweb_22_23.Controllers
             _userManager = userManager;
             _roleManager = roleManager;
         }
+
+        [HttpPost]
+        public ActionResult Talepler(IFormCollection formCollection,string UserId)
+        {
+            bool chkeco = false, chkbuss = false;
+            string chkecoValue = "";
+            string chkbussValue = "";
+            if (!string.IsNullOrEmpty(formCollection["chkeco"])) 
+            { 
+                chkeco = true; 
+            }
+        
+            return View("Index");
+        }
         public async Task<IActionResult> Index()
         {
             var UtilizadorAtual = await _userManager.GetUserAsync(User);
@@ -36,7 +50,7 @@ namespace Tp_Pweb_22_23.Controllers
                     userRolesViewModel.UserName = user.UserName;
                     userRolesViewModel.PrimeiroNome = user.PrimeiroNome;
                     userRolesViewModel.UltimoNome = user.UltimoNome;
-
+                    userRolesViewModel.Activo = user.IsActive;
                     userRolesViewModel.Roles = await _userManager.GetRolesAsync(user);
 
                     userRolesManagerViewModel.Add(userRolesViewModel);
@@ -56,7 +70,7 @@ namespace Tp_Pweb_22_23.Controllers
                     userRolesViewModel.UserName = user.UserName;
                     userRolesViewModel.PrimeiroNome = user.PrimeiroNome;
                     userRolesViewModel.UltimoNome = user.UltimoNome;
-
+                    userRolesViewModel.Activo = user.IsActive;
                     userRolesViewModel.Roles = await _userManager.GetRolesAsync(user);
 
                     userRolesManagerViewModel.Add(userRolesViewModel);
@@ -90,7 +104,6 @@ namespace Tp_Pweb_22_23.Controllers
 
             List<ManageUserRolesViewModel> roles = new List<ManageUserRolesViewModel>();
             var userRoles = await _userManager.GetRolesAsync(await _userManager.Users.Where(u => u.Id == userId).FirstAsync());
-
             var listRoles = await _roleManager.Roles.ToListAsync();
 
             foreach (var role in listRoles)
@@ -99,7 +112,7 @@ namespace Tp_Pweb_22_23.Controllers
                 roleViewModel.RoleId = role.Id;
                 roleViewModel.RoleName = role.Name;
                 roleViewModel.Selected = userRoles.Contains(role.Name);
-
+                roleViewModel.IsActivo = user.IsActive;
                 roles.Add(roleViewModel);
             }
 

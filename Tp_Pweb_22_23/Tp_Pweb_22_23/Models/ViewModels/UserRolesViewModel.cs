@@ -1,4 +1,7 @@
-﻿namespace Tp_Pweb_22_23.Models.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
+
+namespace Tp_Pweb_22_23.Models.ViewModels
 {
     public class UserRolesViewModel
     {
@@ -7,6 +10,8 @@
         public string PrimeiroNome { get; set; }
         public string UltimoNome { get; set; }
         public string UserName { get; set; }
+        [Display(Name = "Is active")]
+        public bool Activo { get; set; }
         public IEnumerable<string> Roles { get; set; }
     }
 }

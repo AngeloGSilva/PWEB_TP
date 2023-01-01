@@ -11,12 +11,14 @@
             <span>
                 Add/Remove Roles for User: 
                 @if (ViewBag.Avatar == null)
-                {
-                    <img id="MyAvatar" class="img-thumbnail" style="height:75px;width:auto" src="~/img/user.png" />
+                {   
+                    <br />
+                    <img id="MyAvatar" class="img-thumbnail" style="height:40px;width:auto" src="~/img/user.png" />
                 }
                 else
                 {
-                    <img id="MyAvatar" class="img-thumbnail" style="height:75px;width:auto"
+                    <br />
+                    <img id="MyAvatar" class="img-thumbnail" style="height:40px;width:auto"
                      src="data:image/*;base64,@(Convert.ToBase64String(ViewBag.Avatar))" />
                 } @ViewData["UserName"]
             </span>
@@ -31,6 +33,8 @@
                     <label class="form-check-label" asp-for="@Model[i].Selected">@Model[i].RoleName</label>
                 </div>
             }
+            <input asp-for="@Model[0].IsActivo" class="form-check-input" />
+            <label class="form-check-label" asp-for="@Model[0].IsActivo">@Model[0].IsActivo</label>
             <div asp-validation-summary="All" class="text-danger"></div>
         </div>
         <div class="card-footer">
