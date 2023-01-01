@@ -3,38 +3,64 @@ using Microsoft.AspNetCore.Mvc;
 using Tp_Pweb_22_23.Models.ViewModels;
 using Tp_Pweb_22_23.Models;
 using Microsoft.EntityFrameworkCore;
+using Tp_Pweb_22_23.Data;
 
 namespace Tp_Pweb_22_23.Controllers
 {
     public class UserRolesManagerController : Controller
     {
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public UserRolesManagerController(UserManager<ApplicationUser> userManager,
+        public UserRolesManagerController(ApplicationDbContext context, UserManager<ApplicationUser> userManager,
        RoleManager<IdentityRole> roleManager)
         {
+            _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
         }
         public async Task<IActionResult> Index()
         {
-            var users = await _userManager.Users.ToListAsync();
-
+            var UtilizadorAtual = await _userManager.GetUserAsync(User);
             List<UserRolesViewModel> userRolesManagerViewModel = new List<UserRolesViewModel>();
 
-            foreach (var user in users)
+            if (User.IsInRole("Admin"))
             {
-                UserRolesViewModel userRolesViewModel = new UserRolesViewModel();
+                var users = await _userManager.Users.ToListAsync();
+                foreach (var user in users)
+                {
+                    UserRolesViewModel userRolesViewModel = new UserRolesViewModel();
 
-                userRolesViewModel.Avatar = user.Avatar;
-                userRolesViewModel.UserId = user.Id;
-                userRolesViewModel.UserName = user.UserName;
-                userRolesViewModel.PrimeiroNome = user.PrimeiroNome;
-                userRolesViewModel.UltimoNome = user.UltimoNome;
+                    userRolesViewModel.Avatar = user.Avatar;
+                    userRolesViewModel.UserId = user.Id;
+                    userRolesViewModel.UserName = user.UserName;
+                    userRolesViewModel.PrimeiroNome = user.PrimeiroNome;
+                    userRolesViewModel.UltimoNome = user.UltimoNome;
 
-                userRolesViewModel.Roles = await _userManager.GetRolesAsync(user);
+                    userRolesViewModel.Roles = await _userManager.GetRolesAsync(user);
 
-                userRolesManagerViewModel.Add(userRolesViewModel);
+                    userRolesManagerViewModel.Add(userRolesViewModel);
+                }
+            }
+            else
+            {
+                var users = await _userManager.Users.ToListAsync();
+                users = await _context.Users.Where(c => c.EmpresaId == UtilizadorAtual.EmpresaId && c.EmpresaId != null).ToListAsync();
+
+                foreach (var user in users)
+                {
+                    UserRolesViewModel userRolesViewModel = new UserRolesViewModel();
+
+                    userRolesViewModel.Avatar = user.Avatar;
+                    userRolesViewModel.UserId = user.Id;
+                    userRolesViewModel.UserName = user.UserName;
+                    userRolesViewModel.PrimeiroNome = user.PrimeiroNome;
+                    userRolesViewModel.UltimoNome = user.UltimoNome;
+
+                    userRolesViewModel.Roles = await _userManager.GetRolesAsync(user);
+
+                    userRolesManagerViewModel.Add(userRolesViewModel);
+                }
             }
             return View(userRolesManagerViewModel);
         }
@@ -42,6 +68,7 @@ namespace Tp_Pweb_22_23.Controllers
         {
             return new List<string>(await _userManager.GetRolesAsync(user));
         }
+
         public async Task<IActionResult> Details(string userId)
         {
 

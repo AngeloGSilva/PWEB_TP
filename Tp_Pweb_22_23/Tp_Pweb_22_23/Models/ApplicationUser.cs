@@ -8,8 +8,9 @@ namespace Tp_Pweb_22_23.Models
         public string PrimeiroNome { get; set; }
         public string UltimoNome { get; set; }
         public int NIF { get; set; }
+        public bool IsActive { get; set; } = true;
         public int? EmpresaId { get; set; }
         public Empresa Empresa { get; set; }
-        public ICollection<Reserva> Reservas{ get; set; }
+        public ICollection<Reserva>? Reservas{ get; set; }
     }
 }

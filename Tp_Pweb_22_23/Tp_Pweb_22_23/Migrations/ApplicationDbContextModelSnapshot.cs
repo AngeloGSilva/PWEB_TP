@@ -3,23 +3,21 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tp_Pweb_22_23.Data;
 
 #nullable disable
 
-namespace Tp_Pweb_22_23.Data.Migrations
+namespace Tp_Pweb_22_23.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221230210757_App")]
-    partial class App
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.10")
+                .HasAnnotation("ProductVersion", "6.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -183,15 +181,20 @@ namespace Tp_Pweb_22_23.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("EmpresaId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("NIF")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("NIF")
+                        .HasColumnType("int");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -230,6 +233,8 @@ namespace Tp_Pweb_22_23.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EmpresaId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -241,6 +246,23 @@ namespace Tp_Pweb_22_23.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Tp_Pweb_22_23.Models.Categoria", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categoria");
+                });
+
             modelBuilder.Entity("Tp_Pweb_22_23.Models.Empresa", b =>
                 {
                     b.Property<int>("Id")
@@ -248,6 +270,9 @@ namespace Tp_Pweb_22_23.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("bit");
 
                     b.Property<int>("Classificacao")
                         .HasColumnType("int");
@@ -275,6 +300,12 @@ namespace Tp_Pweb_22_23.Data.Migrations
                     b.Property<bool>("Entrega")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("FuncionarioId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FuncionarioId1")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<bool>("Leventamento")
                         .HasColumnType("bit");
 
@@ -289,6 +320,8 @@ namespace Tp_Pweb_22_23.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("FuncionarioId1");
+
                     b.HasIndex("ReservaId");
 
                     b.ToTable("EstadoVeiculo");
@@ -302,7 +335,8 @@ namespace Tp_Pweb_22_23.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("ApplicationUserId")
+                    b.Property<string>("ClienteId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("DataEntrega")
@@ -310,9 +344,6 @@ namespace Tp_Pweb_22_23.Data.Migrations
 
                     b.Property<DateTime>("DataRecolha")
                         .HasColumnType("datetime2");
-
-                    b.Property<int?>("EmpresaId")
-                        .HasColumnType("int");
 
                     b.Property<bool>("Estado")
                         .HasColumnType("bit");
@@ -322,9 +353,7 @@ namespace Tp_Pweb_22_23.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("EmpresaId");
+                    b.HasIndex("ClienteId");
 
                     b.HasIndex("VeiculoId");
 
@@ -338,6 +367,9 @@ namespace Tp_Pweb_22_23.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("CategoriaId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Condicao")
                         .HasColumnType("nvarchar(max)");
@@ -362,10 +394,15 @@ namespace Tp_Pweb_22_23.Data.Migrations
                     b.Property<decimal>("Preco")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int?>("idCategoria")
+                        .HasColumnType("int");
+
                     b.Property<int?>("idEmpresa")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoriaId");
 
                     b.HasIndex("EmpresaId");
 
@@ -423,39 +460,58 @@ namespace Tp_Pweb_22_23.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Tp_Pweb_22_23.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("Tp_Pweb_22_23.Models.Empresa", "Empresa")
+                        .WithMany("Funcionarios")
+                        .HasForeignKey("EmpresaId");
+
+                    b.Navigation("Empresa");
+                });
+
             modelBuilder.Entity("Tp_Pweb_22_23.Models.EstadoVeiculo", b =>
                 {
+                    b.HasOne("Tp_Pweb_22_23.Models.ApplicationUser", "Funcionario")
+                        .WithMany()
+                        .HasForeignKey("FuncionarioId1");
+
                     b.HasOne("Tp_Pweb_22_23.Models.Reserva", "Reserva")
                         .WithMany("estadoVeiculos")
                         .HasForeignKey("ReservaId");
+
+                    b.Navigation("Funcionario");
 
                     b.Navigation("Reserva");
                 });
 
             modelBuilder.Entity("Tp_Pweb_22_23.Models.Reserva", b =>
                 {
-                    b.HasOne("Tp_Pweb_22_23.Models.ApplicationUser", null)
+                    b.HasOne("Tp_Pweb_22_23.Models.ApplicationUser", "Cliente")
                         .WithMany("Reservas")
-                        .HasForeignKey("ApplicationUserId");
-
-                    b.HasOne("Tp_Pweb_22_23.Models.Empresa", "Empresa")
-                        .WithMany("Reservas")
-                        .HasForeignKey("EmpresaId");
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Tp_Pweb_22_23.Models.Veiculo", "Veiculo")
                         .WithMany()
                         .HasForeignKey("VeiculoId");
 
-                    b.Navigation("Empresa");
+                    b.Navigation("Cliente");
 
                     b.Navigation("Veiculo");
                 });
 
             modelBuilder.Entity("Tp_Pweb_22_23.Models.Veiculo", b =>
                 {
+                    b.HasOne("Tp_Pweb_22_23.Models.Categoria", "Categoria")
+                        .WithMany("Veiculos")
+                        .HasForeignKey("CategoriaId");
+
                     b.HasOne("Tp_Pweb_22_23.Models.Empresa", "Empresa")
                         .WithMany("Veiculos")
                         .HasForeignKey("EmpresaId");
+
+                    b.Navigation("Categoria");
 
                     b.Navigation("Empresa");
                 });
@@ -465,9 +521,14 @@ namespace Tp_Pweb_22_23.Data.Migrations
                     b.Navigation("Reservas");
                 });
 
+            modelBuilder.Entity("Tp_Pweb_22_23.Models.Categoria", b =>
+                {
+                    b.Navigation("Veiculos");
+                });
+
             modelBuilder.Entity("Tp_Pweb_22_23.Models.Empresa", b =>
                 {
-                    b.Navigation("Reservas");
+                    b.Navigation("Funcionarios");
 
                     b.Navigation("Veiculos");
                 });

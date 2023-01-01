@@ -11,6 +11,8 @@
         public decimal Preco { get; set; }
         public int? idEmpresa { get; set; }
         public Empresa? Empresa { get; set; }
+        public int? idCategoria { get; set; }
+        public Categoria? Categoria { get; set; }
         ICollection<Reserva> reservas { get; set; }
     }
 }

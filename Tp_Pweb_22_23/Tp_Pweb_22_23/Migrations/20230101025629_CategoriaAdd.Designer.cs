@@ -3,17 +3,19 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tp_Pweb_22_23.Data;
 
 #nullable disable
 
-namespace Tp_Pweb_22_23.Data.Migrations
+namespace Tp_Pweb_22_23.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230101025629_CategoriaAdd")]
+    partial class CategoriaAdd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -184,6 +186,9 @@ namespace Tp_Pweb_22_23.Data.Migrations
                     b.Property<int?>("EmpresaId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -241,6 +246,23 @@ namespace Tp_Pweb_22_23.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Tp_Pweb_22_23.Models.Categoria", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categoria");
                 });
 
             modelBuilder.Entity("Tp_Pweb_22_23.Models.Empresa", b =>
@@ -315,10 +337,8 @@ namespace Tp_Pweb_22_23.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("ClienteId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ClienteId1")
+                    b.Property<string>("ClienteId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("DataEntrega")
@@ -326,9 +346,6 @@ namespace Tp_Pweb_22_23.Data.Migrations
 
                     b.Property<DateTime>("DataRecolha")
                         .HasColumnType("datetime2");
-
-                    b.Property<int?>("EmpresaId")
-                        .HasColumnType("int");
 
                     b.Property<bool>("Estado")
                         .HasColumnType("bit");
@@ -338,9 +355,7 @@ namespace Tp_Pweb_22_23.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClienteId1");
-
-                    b.HasIndex("EmpresaId");
+                    b.HasIndex("ClienteId");
 
                     b.HasIndex("VeiculoId");
 
@@ -354,6 +369,9 @@ namespace Tp_Pweb_22_23.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("CategoriaId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Condicao")
                         .HasColumnType("nvarchar(max)");
@@ -378,10 +396,15 @@ namespace Tp_Pweb_22_23.Data.Migrations
                     b.Property<decimal>("Preco")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int?>("idCategoria")
+                        .HasColumnType("int");
+
                     b.Property<int?>("idEmpresa")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoriaId");
 
                     b.HasIndex("EmpresaId");
 
@@ -442,7 +465,7 @@ namespace Tp_Pweb_22_23.Data.Migrations
             modelBuilder.Entity("Tp_Pweb_22_23.Models.ApplicationUser", b =>
                 {
                     b.HasOne("Tp_Pweb_22_23.Models.Empresa", "Empresa")
-                        .WithMany("Utilizadores")
+                        .WithMany("Funcionarios")
                         .HasForeignKey("EmpresaId");
 
                     b.Navigation("Empresa");
@@ -467,11 +490,9 @@ namespace Tp_Pweb_22_23.Data.Migrations
                 {
                     b.HasOne("Tp_Pweb_22_23.Models.ApplicationUser", "Cliente")
                         .WithMany("Reservas")
-                        .HasForeignKey("ClienteId1");
-
-                    b.HasOne("Tp_Pweb_22_23.Models.Empresa", "Empresa")
-                        .WithMany("Reservas")
-                        .HasForeignKey("EmpresaId");
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Tp_Pweb_22_23.Models.Veiculo", "Veiculo")
                         .WithMany()
@@ -479,16 +500,20 @@ namespace Tp_Pweb_22_23.Data.Migrations
 
                     b.Navigation("Cliente");
 
-                    b.Navigation("Empresa");
-
                     b.Navigation("Veiculo");
                 });
 
             modelBuilder.Entity("Tp_Pweb_22_23.Models.Veiculo", b =>
                 {
+                    b.HasOne("Tp_Pweb_22_23.Models.Categoria", "Categoria")
+                        .WithMany("Veiculos")
+                        .HasForeignKey("CategoriaId");
+
                     b.HasOne("Tp_Pweb_22_23.Models.Empresa", "Empresa")
                         .WithMany("Veiculos")
                         .HasForeignKey("EmpresaId");
+
+                    b.Navigation("Categoria");
 
                     b.Navigation("Empresa");
                 });
@@ -498,11 +523,14 @@ namespace Tp_Pweb_22_23.Data.Migrations
                     b.Navigation("Reservas");
                 });
 
+            modelBuilder.Entity("Tp_Pweb_22_23.Models.Categoria", b =>
+                {
+                    b.Navigation("Veiculos");
+                });
+
             modelBuilder.Entity("Tp_Pweb_22_23.Models.Empresa", b =>
                 {
-                    b.Navigation("Reservas");
-
-                    b.Navigation("Utilizadores");
+                    b.Navigation("Funcionarios");
 
                     b.Navigation("Veiculos");
                 });
