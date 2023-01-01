@@ -1,0 +1,61 @@
+﻿@model IEnumerable<Tp_Pweb_22_23.Models.ViewModels.UserRolesViewModel>
+@{
+    ViewData["Title"] = "User Roles";
+}
+<h1>User Roles</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Avatar)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrimeiroNome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UltimoNome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Roles)
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @if (item.Avatar == null)
+                    {
+                        <img id="MyAvatar" class="img-thumbnail" style="height:75px;width:auto" src="~/img/user.png" />
+                    }
+                    else
+                    {
+                        <img id="MyAvatar" class="img-thumbnail" style="height:75px;width:auto"
+                     src="data:image/*;base64,@(Convert.ToBase64String(item.Avatar))" />
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PrimeiroNome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UltimoNome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @String.Join(',',  item.Roles)
+                </td>
+                <td>
+                    <a class="btn btn-primary" asp-action="Details" asp-route-userId="@item.UserId">Manage Roles</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

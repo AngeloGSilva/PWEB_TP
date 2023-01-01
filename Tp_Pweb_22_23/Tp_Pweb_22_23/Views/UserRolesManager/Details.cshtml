@@ -1,0 +1,41 @@
+﻿@model List<Tp_Pweb_22_23.Models.ViewModels.ManageUserRolesViewModel>
+@{
+    ViewData["Title"] = "Manage User Roles";
+}
+
+
+<form method="post">
+    <div class="card">
+        <div class="card-header">
+            <h2>Manage User Roles</h2>
+            <span>
+                Add/Remove Roles for User: 
+                @if (ViewBag.Avatar == null)
+                {
+                    <img id="MyAvatar" class="img-thumbnail" style="height:75px;width:auto" src="~/img/user.png" />
+                }
+                else
+                {
+                    <img id="MyAvatar" class="img-thumbnail" style="height:75px;width:auto"
+                     src="data:image/*;base64,@(Convert.ToBase64String(ViewBag.Avatar))" />
+                } @ViewData["UserName"]
+            </span>
+        </div>
+        <div class="card-body">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <div class="form-check m-1">
+                    <input type="hidden" asp-for="@Model[i].RoleId" />
+                    <input type="hidden" asp-for="@Model[i].RoleName" />
+                    <input asp-for="@Model[i].Selected" class="form-check-input" />
+                    <label class="form-check-label" asp-for="@Model[i].Selected">@Model[i].RoleName</label>
+                </div>
+            }
+            <div asp-validation-summary="All" class="text-danger"></div>
+        </div>
+        <div class="card-footer">
+            <input class="btn btn-primary" type="submit" style="width:auto" value="Update" />
+            <a class="btn btn-secondary" style="width:auto" asp-action="Index">Cancel</a>
+        </div>  
+    </div>
+</form>
