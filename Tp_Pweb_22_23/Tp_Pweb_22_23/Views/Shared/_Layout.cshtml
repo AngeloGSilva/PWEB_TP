@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Tp_Pweb_22_23</title>
+    <title>@ViewData["Title"] -  C A R H O U S E</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Tp_Pweb_22_23.styles.css" asp-append-version="true" />
@@ -13,7 +13,9 @@
         <div class="container">
 
             <nav class="navbar fixed-top navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark mb-3" data-bs-theme="dark">
-                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">Tp_Pweb_22_23</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="/img/rentcar-removebg-preview.png" alt="Bootstrap" width="150" height="40">
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -24,7 +26,7 @@
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-controller="Veiculos" asp-action=" "> Os nossos Automóveis</a>
                         </li>
                         @if (User.IsInRole("Cliente"))
                         {

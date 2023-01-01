@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Tp_Pweb_22_23.Migrations
 {
-    public partial class initPortatil : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,6 +21,19 @@ namespace Tp_Pweb_22_23.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Categoria",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categoria", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -68,6 +81,7 @@ namespace Tp_Pweb_22_23.Migrations
                     PrimeiroNome = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UltimoNome = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NIF = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
                     EmpresaId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -107,11 +121,18 @@ namespace Tp_Pweb_22_23.Migrations
                     Localizacao = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Preco = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     idEmpresa = table.Column<int>(type: "int", nullable: true),
-                    EmpresaId = table.Column<int>(type: "int", nullable: true)
+                    EmpresaId = table.Column<int>(type: "int", nullable: true),
+                    idCategoria = table.Column<int>(type: "int", nullable: true),
+                    CategoriaId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Veiculo", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Veiculo_Categoria_CategoriaId",
+                        column: x => x.CategoriaId,
+                        principalTable: "Categoria",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Veiculo_Empresa_EmpresaId",
                         column: x => x.EmpresaId,
@@ -213,24 +234,18 @@ namespace Tp_Pweb_22_23.Migrations
                     Estado = table.Column<bool>(type: "bit", nullable: false),
                     DataRecolha = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DataEntrega = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EmpresaId = table.Column<int>(type: "int", nullable: true),
                     VeiculoId = table.Column<int>(type: "int", nullable: true),
-                    ClienteId = table.Column<int>(type: "int", nullable: true),
-                    ClienteId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    ClienteId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Reserva", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reserva_AspNetUsers_ClienteId1",
-                        column: x => x.ClienteId1,
+                        name: "FK_Reserva_AspNetUsers_ClienteId",
+                        column: x => x.ClienteId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Reserva_Empresa_EmpresaId",
-                        column: x => x.EmpresaId,
-                        principalTable: "Empresa",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Reserva_Veiculo_VeiculoId",
                         column: x => x.VeiculoId,
@@ -323,19 +338,19 @@ namespace Tp_Pweb_22_23.Migrations
                 column: "ReservaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reserva_ClienteId1",
+                name: "IX_Reserva_ClienteId",
                 table: "Reserva",
-                column: "ClienteId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reserva_EmpresaId",
-                table: "Reserva",
-                column: "EmpresaId");
+                column: "ClienteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reserva_VeiculoId",
                 table: "Reserva",
                 column: "VeiculoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Veiculo_CategoriaId",
+                table: "Veiculo",
+                column: "CategoriaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Veiculo_EmpresaId",
@@ -374,6 +389,9 @@ namespace Tp_Pweb_22_23.Migrations
 
             migrationBuilder.DropTable(
                 name: "Veiculo");
+
+            migrationBuilder.DropTable(
+                name: "Categoria");
 
             migrationBuilder.DropTable(
                 name: "Empresa");
