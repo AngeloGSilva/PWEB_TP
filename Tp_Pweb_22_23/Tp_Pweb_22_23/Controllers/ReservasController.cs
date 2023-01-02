@@ -18,6 +18,15 @@ namespace Tp_Pweb_22_23.Controllers
         {
             _context = context;
         }
+        private ApplicationUser GetCurrentUser()
+        {
+            var user = _context.Users
+                .Where(u => u.UserName == User.Identity.Name)
+                .Include(u => u.Empresa)
+                .FirstOrDefault();
+            return user;
+        }
+
 
         // GET: Reservas
         public async Task<IActionResult> Index()

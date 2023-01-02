@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,10 +15,22 @@ namespace Tp_Pweb_22_23.Controllers
     public class VeiculosController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public VeiculosController(ApplicationDbContext context)
+        public VeiculosController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
+        }
+
+
+        private ApplicationUser GetCurrentUser()
+        {
+            var user = _context.Users
+                .Where(u => u.UserName == User.Identity.Name)
+                .Include(u => u.Empresa)
+                .FirstOrDefault();
+            return user;
         }
 
         //verifica se a extensão é .png,.jpg,.jpeg
@@ -45,7 +58,9 @@ namespace Tp_Pweb_22_23.Controllers
         // GET: Veiculos
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Veiculo.ToListAsync());
+            ViewData["EmpresaId"] = new SelectList(_context.Empresa.ToList(), "Id", "Nome");
+            var funcionario = GetCurrentUser();
+            return View(await _context.Veiculo.Where(c=> c.idEmpresa.Equals(funcionario.EmpresaId)).ToListAsync());
         }
 
         // GET: Veiculos/Details/5
@@ -69,6 +84,7 @@ namespace Tp_Pweb_22_23.Controllers
         // GET: Veiculos/Create
         public IActionResult Create()
         {
+            //ViewData["EmpresaId"] = new SelectList(_context.Empresa.Include(c => c.Funcionarios).Include(u => u.Funcionarios).ToList());
             return View();
         }
 
@@ -77,8 +93,11 @@ namespace Tp_Pweb_22_23.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Foto,Marca,Disponivel,Danos,Condicao,Localizacao,Preco,idEmpresa,idCategoria")] Veiculo veiculo, IFormFile FotoVeiculo)
+        public async Task<IActionResult> Create([Bind("Id,Foto,Marca,Disponivel,Danos,Condicao,Localizacao,Preco,idCategoria")] Veiculo veiculo, IFormFile FotoVeiculo)
         {
+            var funcionario = GetCurrentUser();
+            //var user = _userManage.
+            //ViewData["EmpresaId"] = new SelectList(_context.Empresa.Include(c => c.Id).Include(u => u.Funcionarios).ToList());
             if (ModelState.IsValid)
             {
                 if (FotoVeiculo.Length <= (200 * 1024) && isValidFileType(FotoVeiculo.FileName))
@@ -88,14 +107,15 @@ namespace Tp_Pweb_22_23.Controllers
                         await FotoVeiculo.CopyToAsync(dataStream);
                         veiculo.Foto = dataStream.ToArray();
                     }
+                    veiculo.idEmpresa = funcionario.EmpresaId;
+                    veiculo.Empresa = funcionario.Empresa;
                     _context.Add(veiculo);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    TempData["Error"] = String.Format(
-                    "Imagem demasiado Grande.");
+                    TempData["Error"] = String.Format("Imagem demasiado Grande.");
                 }
             }
             return View(veiculo);

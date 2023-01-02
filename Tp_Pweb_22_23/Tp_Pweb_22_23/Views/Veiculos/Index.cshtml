@@ -9,9 +9,12 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table table-light table-hover">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Foto)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Marca)
             </th>
@@ -31,7 +34,7 @@
                 @Html.DisplayNameFor(model => model.Preco)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.idEmpresa)
+                @Html.DisplayNameFor(model => model.Empresa.Nome)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.idCategoria)
@@ -40,38 +43,50 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Marca)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Disponivel)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Danos)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Condicao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Localizacao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Preco)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.idEmpresa)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.idCategoria)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @if (item.Foto == null)
+                    {
+                        <img id="Foto" class="img-thumbnail" style="height:40px;width:auto" src="~/img/carIcon.png" />
+                    }
+                    else
+                    {
+                        <img id="MyAvatar" class="img-thumbnail" style="height:40px;width:auto"
+                     src="data:image/*;base64,@(Convert.ToBase64String(item.Foto))" />
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Marca)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Disponivel)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Danos)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Condicao)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Localizacao)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Preco)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Empresa.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.idCategoria)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
