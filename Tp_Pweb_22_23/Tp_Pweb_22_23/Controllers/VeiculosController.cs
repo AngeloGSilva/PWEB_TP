@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Tp_Pweb_22_23.Data;
 using Tp_Pweb_22_23.Models;
+using Tp_Pweb_22_23.Models.ViewModels;
 
 namespace Tp_Pweb_22_23.Controllers
 {
@@ -18,6 +19,15 @@ namespace Tp_Pweb_22_23.Controllers
         {
             _context = context;
         }
+
+        public async Task<IActionResult> AllVeiculos() 
+        {
+            var veiculos = new AllVeiculosViewModel();
+            veiculos.ListaDeVeiculos = await _context.Veiculo.Where(c => c.Disponivel == true).ToListAsync();
+            veiculos.NumResultados = veiculos.ListaDeVeiculos.Count;
+            return View(veiculos);
+        }
+
 
         // GET: Veiculos
         public async Task<IActionResult> Index()
