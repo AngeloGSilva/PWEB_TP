@@ -6,8 +6,7 @@
         public int Id { get; set; }
         public string Marca { get; set; }
         public bool Disponivel { get; set; }
-        public bool Danos { get; set; }
-        public string? Condicao { get; set; }
+        public string Modelo { get; set; }
         public string Localizacao { get; set; }
         public decimal Preco { get; set; }
         public int? idEmpresa { get; set; }

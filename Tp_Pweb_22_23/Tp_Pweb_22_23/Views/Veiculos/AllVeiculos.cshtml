@@ -4,25 +4,34 @@
     ViewData["Title"] = "Index";
 }
 
+<style>
+    .card-img-top{
+        max-height: 200px;
+        max-width: 200px;
+    }
+
+</style>
+
 <h1>Os Nossos Veiculos</h1>
 
 <div class="row row-cols-1 row-cols-md-3 g-4">
     @foreach (var item in Model.ListaDeVeiculos)
     {
-            <div class="col">
+        <div class="col">
             <div class="card h-100 align-items-center">
                 @if (item.Foto == null)
                 {
-                    <img src="/img/carIcon.png" class="card-img-top w-50" alt="...">
+                    <img id="foto" src="/img/carIcon.png" class="card-img-top" alt="...">
                 }
                 else
                 {
-                    <img src="data:image/*;base64,@(Convert.ToBase64String(item.Foto))" class="card-img-top w-50 " alt="...">
+                    <img id="foto" src="data:image/*;base64,@(Convert.ToBase64String(item.Foto))" class="card-img-top" alt="...">
                 }
                     <div class="card-body">
                         <h5 class="card-title">Card title</h5>
                         <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                    </div>
+                    <a class="w-50 btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.Id"> Details</a>
+                </div>
                     <div class="card-footer w-100">
                     <small class="text-muted">Localização:@item.Localizacao</small>
                     </div>

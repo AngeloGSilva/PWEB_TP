@@ -22,10 +22,7 @@
                 @Html.DisplayNameFor(model => model.Disponivel)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Danos)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Condicao)
+                @Html.DisplayNameFor(model => model.Modelo)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Localizacao)
@@ -37,7 +34,7 @@
                 @Html.DisplayNameFor(model => model.Empresa.Nome)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.idCategoria)
+                @Html.DisplayNameFor(model => model.Categoria.Nome)
             </th>
             <th></th>
         </tr>
@@ -64,10 +61,7 @@
                     @Html.DisplayFor(modelItem => item.Disponivel)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Danos)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Condicao)
+                    @Html.DisplayFor(modelItem => item.Modelo)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Localizacao)
@@ -79,7 +73,7 @@
                     @Html.DisplayFor(modelItem => item.Empresa.Nome)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.idCategoria)
+                    @Html.DisplayFor(modelItem => item.Categoria.Nome)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

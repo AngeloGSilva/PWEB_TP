@@ -58,6 +58,7 @@ namespace Tp_Pweb_22_23.Controllers
         // GET: Veiculos
         public async Task<IActionResult> Index()
         {
+            ViewData["CategoriaId"] = new SelectList(_context.Categoria.ToList(), "Id", "Nome");
             ViewData["EmpresaId"] = new SelectList(_context.Empresa.ToList(), "Id", "Nome");
             var funcionario = GetCurrentUser();
             return View(await _context.Veiculo.Where(c=> c.idEmpresa.Equals(funcionario.EmpresaId)).ToListAsync());
@@ -66,6 +67,8 @@ namespace Tp_Pweb_22_23.Controllers
         // GET: Veiculos/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            ViewData["CategoriaId"] = new SelectList(_context.Categoria.ToList(), "Id", "Nome");
+            ViewData["EmpresaId"] = new SelectList(_context.Empresa.ToList(), "Id", "Nome");
             if (id == null || _context.Veiculo == null)
             {
                 return NotFound();
@@ -84,6 +87,7 @@ namespace Tp_Pweb_22_23.Controllers
         // GET: Veiculos/Create
         public IActionResult Create()
         {
+            ViewData["CategoriaId"] = new SelectList(_context.Categoria.ToList(), "Id", "Nome");
             //ViewData["EmpresaId"] = new SelectList(_context.Empresa.Include(c => c.Funcionarios).Include(u => u.Funcionarios).ToList());
             return View();
         }
@@ -93,11 +97,17 @@ namespace Tp_Pweb_22_23.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Foto,Marca,Disponivel,Danos,Condicao,Localizacao,Preco,idCategoria")] Veiculo veiculo, IFormFile FotoVeiculo)
+        public async Task<IActionResult> Create([Bind("Id,Foto,Marca,Disponivel,Modelo,Localizacao,Preco,idCategoria")] Veiculo veiculo, IFormFile FotoVeiculo)
         {
             var funcionario = GetCurrentUser();
+
+            if (FotoVeiculo == null)
+            {
+                TempData["Error"] = String.Format("Precisa de Colocar foto");
+                return RedirectToAction(nameof(Create));
+            }
             //var user = _userManage.
-            //ViewData["EmpresaId"] = new SelectList(_context.Empresa.Include(c => c.Id).Include(u => u.Funcionarios).ToList());
+            ViewData["CategoriaId"] = new SelectList(_context.Categoria.ToList(), "Id", "Nome");
             if (ModelState.IsValid)
             {
                 if (FotoVeiculo.Length <= (200 * 1024) && isValidFileType(FotoVeiculo.FileName))
@@ -109,6 +119,9 @@ namespace Tp_Pweb_22_23.Controllers
                     }
                     veiculo.idEmpresa = funcionario.EmpresaId;
                     veiculo.Empresa = funcionario.Empresa;
+                    var categoria = await _context.Categoria.Where(c => c.Id == veiculo.idCategoria).FirstAsync();
+                    veiculo.Categoria = categoria;
+                    //TempData["Info"] = String.Format("Categoria a null ");
                     _context.Add(veiculo);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -116,6 +129,7 @@ namespace Tp_Pweb_22_23.Controllers
                 else
                 {
                     TempData["Error"] = String.Format("Imagem demasiado Grande.");
+                    return RedirectToAction(nameof(Create));
                 }
             }
             return View(veiculo);
@@ -142,7 +156,7 @@ namespace Tp_Pweb_22_23.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Foto,Marca,Disponivel,Danos,Condicao,Localizacao,Preco,idEmpresa,idCategoria")] Veiculo veiculo)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Foto,Marca,Disponivel,Modelo,Localizacao,Preco,idEmpresa,idCategoria")] Veiculo veiculo)
         {
             if (id != veiculo.Id)
             {

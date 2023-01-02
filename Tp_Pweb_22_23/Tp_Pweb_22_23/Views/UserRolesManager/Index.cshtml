@@ -1,5 +1,67 @@
 ﻿@model IEnumerable<Tp_Pweb_22_23.Models.ViewModels.UserRolesViewModel>
+
 @{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Manage Users</h1>
+
+@if (User.IsInRole("Gestor"))
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Avatar)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrimeiroNome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UltimoNome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Activo)
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <img id="Foto" class="img-thumbnail" style="height:40px;width:auto" src="~/img/user.png" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PrimeiroNome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UltimoNome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Activo)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.UserId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.UserId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.UserId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+
+
+@*@{
     ViewData["Title"] = "User Roles";
 }
 <h1>User Roles</h1>
@@ -69,3 +131,4 @@
         }
     </tbody>
 </table>
+*@

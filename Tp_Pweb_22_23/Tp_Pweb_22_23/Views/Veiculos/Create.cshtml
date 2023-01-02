@@ -34,15 +34,10 @@
                     <input class="form-check-input" asp-for="Disponivel" /> @Html.DisplayNameFor(model => model.Disponivel)
                 </label>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Danos" /> @Html.DisplayNameFor(model => model.Danos)
-                </label>
-            </div>
             <div class="form-group">
-                <label asp-for="Condicao" class="control-label"></label>
-                <input asp-for="Condicao" class="form-control" />
-                <span asp-validation-for="Condicao" class="text-danger"></span>
+                <label asp-for="Modelo" class="control-label"></label>
+                <input asp-for="Modelo" class="form-control" />
+                <span asp-validation-for="Modelo" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Localizacao" class="control-label"></label>
@@ -56,8 +51,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="idCategoria" class="control-label"></label>
-                <input asp-for="idCategoria" class="form-control" />
-                <span asp-validation-for="idCategoria" class="text-danger"></span>
+                <select asp-for="idCategoria" class="form-control" asp-items="@(ViewData["CategoriaId"] as SelectList)"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
