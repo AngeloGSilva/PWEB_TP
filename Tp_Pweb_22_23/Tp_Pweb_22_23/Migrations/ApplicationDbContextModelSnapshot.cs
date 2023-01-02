@@ -383,6 +383,9 @@ namespace Tp_Pweb_22_23.Migrations
                     b.Property<int?>("EmpresaId")
                         .HasColumnType("int");
 
+                    b.Property<byte[]>("Foto")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<string>("Localizacao")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

@@ -20,6 +20,19 @@ namespace Tp_Pweb_22_23.Controllers
             _context = context;
         }
 
+        //verifica se a extensão é .png,.jpg,.jpeg
+        public bool isValidFileType(string filename)
+        {
+            List<string> fileExtensions = new List<string>() { "png", "jpg", "jpeg" };
+            List<string> filenameSeparated = filename.Split('.').Reverse().ToList<string>();
+
+            foreach (var extension in fileExtensions)
+                if (extension.Equals(filenameSeparated[0]))
+                    return true;
+
+            return false;
+        }
+
         public async Task<IActionResult> AllVeiculos() 
         {
             var veiculos = new AllVeiculosViewModel();
@@ -64,13 +77,26 @@ namespace Tp_Pweb_22_23.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Marca,Disponivel,Danos,Condicao,Localizacao,Preco,idEmpresa,idCategoria")] Veiculo veiculo)
+        public async Task<IActionResult> Create([Bind("Id,Foto,Marca,Disponivel,Danos,Condicao,Localizacao,Preco,idEmpresa,idCategoria")] Veiculo veiculo, IFormFile FotoVeiculo)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(veiculo);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (FotoVeiculo.Length <= (200 * 1024) && isValidFileType(FotoVeiculo.FileName))
+                {
+                    using (var dataStream = new MemoryStream())
+                    {
+                        await FotoVeiculo.CopyToAsync(dataStream);
+                        veiculo.Foto = dataStream.ToArray();
+                    }
+                    _context.Add(veiculo);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    TempData["Error"] = String.Format(
+                    "Imagem demasiado Grande.");
+                }
             }
             return View(veiculo);
         }
@@ -96,7 +122,7 @@ namespace Tp_Pweb_22_23.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Marca,Disponivel,Danos,Condicao,Localizacao,Preco,idEmpresa,idCategoria")] Veiculo veiculo)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Foto,Marca,Disponivel,Danos,Condicao,Localizacao,Preco,idEmpresa,idCategoria")] Veiculo veiculo)
         {
             if (id != veiculo.Id)
             {

@@ -12,8 +12,8 @@ using Tp_Pweb_22_23.Data;
 namespace Tp_Pweb_22_23.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230101192300_init")]
-    partial class init
+    [Migration("20230102002146_fotoCarro")]
+    partial class fotoCarro
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -384,6 +384,9 @@ namespace Tp_Pweb_22_23.Migrations
 
                     b.Property<int?>("EmpresaId")
                         .HasColumnType("int");
+
+                    b.Property<byte[]>("Foto")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Localizacao")
                         .IsRequired()

@@ -2,6 +2,7 @@
 {
     public class Veiculo
     {
+        public byte[]? Foto { get; set; }
         public int Id { get; set; }
         public string Marca { get; set; }
         public bool Disponivel { get; set; }
