@@ -9,6 +9,7 @@ namespace Tp_Pweb_22_23.Models
         public string Marca { get; set; }
         public bool Disponivel { get; set; }
         public string Modelo { get; set; }
+        [Display(Name = "Localização")]
         public string Localizacao { get; set; }
 
         [Display(Name = "Preço")]

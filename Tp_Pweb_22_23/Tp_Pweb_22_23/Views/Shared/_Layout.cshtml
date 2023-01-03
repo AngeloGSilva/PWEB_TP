@@ -35,18 +35,28 @@
                             </li>
                         }
                         @if (User.IsInRole("Funcionario") || User.IsInRole("Gestor"))
-                        {
+                        {   
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Area de Funcionario
-                                </a>
+                                @if (User.IsInRole("Gestor"))
+                                {
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Área do Gestor
+                                    </a>
+                                }
+                                 @if (User.IsInRole("Funcionario"))
+                                {
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Área do Funcionário
+                                    </a>
+                                }
+
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" asp-controller="Veiculos" asp-action="Index">Gerir Veiculos</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Veiculos" asp-action="Index">Gerir Veículos</a></li>
                                     <li><a class="dropdown-item" asp-controller="Reservas" asp-action="Index">Gerir Reservas</a></li>
                                     @if (User.IsInRole("Gestor"))
                                     {
                                         <li><hr class="dropdown-divider" /></li>
-                                        <li><a class="dropdown-item" asp-controller="UserRolesManager" asp-action="Index">Gerir Funcionarios</a></li>
+                                        <li><a class="dropdown-item" asp-controller="UserRolesManager" asp-action="Index">Gerir Funcionários</a></li>
                                     }
                                 </ul>
                             </li>
@@ -55,7 +65,7 @@
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Admin Area
+                                    Área do Administrador
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" asp-controller="Empresas" asp-action="Index">Gerir Empresas</a></li>
