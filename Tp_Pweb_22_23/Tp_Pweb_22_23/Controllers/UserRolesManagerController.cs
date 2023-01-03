@@ -55,7 +55,9 @@ namespace Tp_Pweb_22_23.Controllers
                 var users = await _userManager.Users.ToListAsync();
                 foreach (var user in users)
                 {
-                    UserRolesViewModel userRolesViewModel = new UserRolesViewModel();
+                    if (user.Id != UtilizadorAtual.Id)
+                    {
+                        UserRolesViewModel userRolesViewModel = new UserRolesViewModel();
 
                     userRolesViewModel.Avatar = user.Avatar;
                     userRolesViewModel.UserId = user.Id;
@@ -66,6 +68,7 @@ namespace Tp_Pweb_22_23.Controllers
                     userRolesViewModel.Roles = await _userManager.GetRolesAsync(user);
 
                     userRolesManagerViewModel.Add(userRolesViewModel);
+                }
                 }
             }
             else
