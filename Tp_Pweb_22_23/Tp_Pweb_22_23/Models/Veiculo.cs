@@ -10,6 +10,7 @@ namespace Tp_Pweb_22_23.Models
         public bool Disponivel { get; set; }
         public string Modelo { get; set; }
         public string Localizacao { get; set; }
+
         [Display(Name = "Preço")]
         public decimal Preco { get; set; }
         public int? idEmpresa { get; set; }
@@ -19,3 +20,4 @@ namespace Tp_Pweb_22_23.Models
         ICollection<Reserva> reservas { get; set; }
     }
 }
+

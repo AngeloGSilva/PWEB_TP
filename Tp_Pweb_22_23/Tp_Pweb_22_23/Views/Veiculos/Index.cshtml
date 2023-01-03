@@ -9,6 +9,35 @@
 <p>
     <a asp-action="Create">Adicionar novo veiculo</a>
 </p>
+
+@*<style>
+
+    th {
+        cursor: pointer;
+        color: black;
+    }
+
+    th:hover {
+        color: blue;
+    }
+</style>*@
+
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Procura: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Index">Lista Completa</a>
+        </p>
+    </div>
+</form>
+
+<form method="get">
+    <input type="checkbox" id="onlyAvailable" name="onlyAvailable" value="true"/> Only show available vehicles
+    <button type="submit">Filter</button>
+</form>
+
 <table class="table table-light table-hover">
     <thead>
         <tr>
@@ -16,7 +45,7 @@
                 
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Marca)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["MarcaSortParm"]">@Html.DisplayNameFor(model => model.Marca)</a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Disponivel)
@@ -28,7 +57,7 @@
                 @Html.DisplayNameFor(model => model.Localizacao)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Preco)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["PrecoSortParm"]">@Html.DisplayNameFor(model => model.Preco)</a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Empresa.Nome)
@@ -50,8 +79,7 @@
                     }
                     else
                     {
-                        <img id="MyAvatar" class="img-thumbnail" style="height:40px;width:auto"
-                     src="data:image/*;base64,@(Convert.ToBase64String(item.Foto))" />
+                        <img id="MyAvatar" class="img-thumbnail" style="height:40px;width:auto" src="data:image/*;base64,@(Convert.ToBase64String(item.Foto))" />
                     }
                 </td>
                 <td>
