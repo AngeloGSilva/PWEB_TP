@@ -27,9 +27,12 @@
                 {
                     <img id="foto" src="data:image/*;base64,@(Convert.ToBase64String(item.Foto))" class="card-img-top" alt="...">
                 }
-                <div class="card-body">
-                    <h5 class="card-title align-content-center">@item.Marca @item.Modelo</h5>
-                    <p class="card-text align-content-center">@item.Preco €/dia.</p>
+                <div class="card-body align-items-center">
+                    <h5 class="card-title align-items-center">@item.Marca @item.Modelo</h5>
+                    <h7 class="card-text align-items-center">
+                        @item.Preco €/dia.<br /></h7>
+                    <h7>@item.Empresa.Nome</h7>
+                
                     <a class="w-100 btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.Id"> Saber mais</a>
                 </div>
                     <div class="card-footer w-100">

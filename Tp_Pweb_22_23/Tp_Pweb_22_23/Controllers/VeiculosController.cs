@@ -49,6 +49,7 @@ namespace Tp_Pweb_22_23.Controllers
         public async Task<IActionResult> AllVeiculos() 
         {
             var veiculos = new AllVeiculosViewModel();
+            ViewData["EmpresaId"] = new SelectList(_context.Empresa.ToList(), "Id", "Nome");
             veiculos.ListaDeVeiculos = await _context.Veiculo.Where(c => c.Disponivel == true).ToListAsync();
             veiculos.NumResultados = veiculos.ListaDeVeiculos.Count;
             return View(veiculos);
