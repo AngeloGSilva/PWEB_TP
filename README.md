@@ -25,7 +25,7 @@
 - [x] Criar registo de utilizadores, com o perfil gestor, associado à sua empresa
 - [x] Listar registo de utilizadores
 - [x] Ativar ou inativar registo de utilizadores
-- [x] Apagar registo de utilizador (caso não esteja associado a nenhuma reserva)
+- [1/2] Apagar registo de utilizador (caso não esteja associado a nenhuma reserva)
 - [x] Não pode apagar nem desativar o seu próprio registo de utilizador
 
 ### Gestão de reservas
