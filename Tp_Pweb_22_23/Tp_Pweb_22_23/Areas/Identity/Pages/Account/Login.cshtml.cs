@@ -119,7 +119,7 @@ namespace Tp_Pweb_22_23.Areas.Identity.Pages.Account
                 var user = await _context.Users.Where(c => c.Email == Input.Email).FirstAsync();
                 if (user != null)
                     if (!user.IsActive) {
-                        ModelState.AddModelError(string.Empty, "Falar Com gestor da empresa.");
+                        ModelState.AddModelError(string.Empty, "Esta conta foi desativada. Se considera tratar-se de um erro, por favor contacte um Gestor da empresa.");
                         return Page();
                     }
 
