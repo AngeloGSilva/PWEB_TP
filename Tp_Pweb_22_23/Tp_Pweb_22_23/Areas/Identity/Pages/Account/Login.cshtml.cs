@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Tp_Pweb_22_23.Models;
+using Microsoft.EntityFrameworkCore;
+using Tp_Pweb_22_23.Data;
 
 namespace Tp_Pweb_22_23.Areas.Identity.Pages.Account
 {
@@ -22,11 +24,13 @@ namespace Tp_Pweb_22_23.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly ApplicationDbContext _context;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger, ApplicationDbContext context)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _context = context;
         }
 
         /// <summary>
@@ -112,11 +116,19 @@ namespace Tp_Pweb_22_23.Areas.Identity.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+                var user = await _context.Users.Where(c => c.Email == Input.Email).FirstAsync();
+                if (user != null)
+                    if (!user.IsActive) {
+                        ModelState.AddModelError(string.Empty, "Falar Com gestor da empresa.");
+                        return Page();
+                    }
+
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
+
                 }
                 if (result.RequiresTwoFactor)
                 {
