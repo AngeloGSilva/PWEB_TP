@@ -36,7 +36,7 @@ namespace Tp_Pweb_22_23.Controllers
         //verifica se a extensão é .png,.jpg,.jpeg
         public bool isValidFileType(string filename)
         {
-            List<string> fileExtensions = new List<string>() { "png", "jpg", "jpeg" };
+            List<string> fileExtensions = new List<string>() { "PNG", "png", "jpg", "jpeg","JPG" };
             List<string> filenameSeparated = filename.Split('.').Reverse().ToList<string>();
 
             foreach (var extension in fileExtensions)
@@ -110,7 +110,7 @@ namespace Tp_Pweb_22_23.Controllers
             ViewData["CategoriaId"] = new SelectList(_context.Categoria.ToList(), "Id", "Nome");
             if (ModelState.IsValid)
             {
-                if (FotoVeiculo.Length <= (200 * 1024) && isValidFileType(FotoVeiculo.FileName))
+                if (FotoVeiculo.Length <= (400 * 1024) && isValidFileType(FotoVeiculo.FileName))
                 {
                     using (var dataStream = new MemoryStream())
                     {

@@ -5,9 +5,9 @@
 }
 
 <style>
-    .card-img-top{
-        max-height: 200px;
-        max-width: 200px;
+    .img{
+        max-height: 565px;
+        max-width: 1000px;
     }
 
 </style>
@@ -18,7 +18,7 @@
     @foreach (var item in Model.ListaDeVeiculos)
     {
         <div class="col">
-            <div class="card h-100 align-items-center">
+            <div class="card h-65 align-items-center">
                 @if (item.Foto == null)
                 {
                     <img id="foto" src="/img/carIcon.png" class="card-img-top" alt="...">
@@ -27,13 +27,13 @@
                 {
                     <img id="foto" src="data:image/*;base64,@(Convert.ToBase64String(item.Foto))" class="card-img-top" alt="...">
                 }
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                    <a class="w-50 btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.Id"> Saber mais</a>
+                <div class="card-body">
+                    <h5 class="card-title align-content-center">@item.Marca @item.Modelo</h5>
+                    <p class="card-text align-content-center">@item.Preco €/dia.</p>
+                    <a class="w-100 btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.Id"> Saber mais</a>
                 </div>
                     <div class="card-footer w-100">
-                    <small class="text-muted">Localização:@item.Localizacao</small>
+                    <small class="text-muted">Localização: @item.Localizacao</small>
                     </div>
                 </div>
             </div>
