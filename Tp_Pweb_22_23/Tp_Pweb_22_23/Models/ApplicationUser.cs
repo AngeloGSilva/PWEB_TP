@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
 
 namespace Tp_Pweb_22_23.Models
 {

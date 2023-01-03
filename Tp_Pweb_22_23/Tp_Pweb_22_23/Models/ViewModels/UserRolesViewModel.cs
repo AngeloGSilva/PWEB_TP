@@ -10,7 +10,7 @@ namespace Tp_Pweb_22_23.Models.ViewModels
         public string PrimeiroNome { get; set; }
         public string UltimoNome { get; set; }
         public string UserName { get; set; }
-        [Display(Name = "Is active")]
+        [Display(Name = "Activo")]
         public bool Activo { get; set; }
         public IEnumerable<string> Roles { get; set; }
     }

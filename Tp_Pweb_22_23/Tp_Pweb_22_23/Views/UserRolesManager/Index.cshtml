@@ -4,12 +4,12 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Manage Users</h1>
+<h1>Utilizadores</h1>
 
 @if (User.IsInRole("Gestor"))
 {
     <p>
-        <a asp-action="Create">Create New</a>
+        <a asp-action="Create">Adicionar novo utilizador</a>
     </p>
 }
 
@@ -20,10 +20,10 @@
                 @Html.DisplayNameFor(model => model.Avatar)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PrimeiroNome)
+              
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UltimoNome)
+              
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Activo)
@@ -48,9 +48,9 @@
                     @Html.DisplayFor(modelItem => item.Activo)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.UserId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.UserId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.UserId">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.UserId">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.UserId">Detalhes</a> |
+                    <a asp-action="Delete" asp-route-id="@item.UserId">Eliminar</a>
                 </td>
             </tr>
         }

@@ -4,9 +4,7 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>Veiculo</h4>
+<h1>Adicionar novo veiculo</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -19,7 +17,7 @@
                      src="~/img/defaultcar.jpg">
             </div>
             <div>
-                <label asp-for="Foto">Escolha uma imagem de perfil:</label>
+                <label asp-for="Foto">Adicione uma imagem do veiculo</label>
                 <input name="FotoVeiculo" type="file" accept=".png,.jpg,.jpeg,image/png,image/jpeg"
                        asp-for="Foto" class="form-control" onChange="document.getElementById('MyFotoDisplay').src = window.URL.createObjectURL(this.files[0])" ) />
                 <span asp-validation-for="Foto" class="text-danger"></span>
@@ -54,14 +52,14 @@
                 <select asp-for="idCategoria" class="form-control" asp-items="@(ViewData["CategoriaId"] as SelectList)"></select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Adicionar" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Voltar</a>
 </div>
 
 @section Scripts {
