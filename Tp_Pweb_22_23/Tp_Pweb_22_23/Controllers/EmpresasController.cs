@@ -174,6 +174,26 @@ namespace Tp_Pweb_22_23.Controllers
             return View(empresa);
         }
 
+        public async Task<bool> CheckVeiculosEmpresa(int id) 
+        {
+            var veiculos = await _context.Veiculo.Where(c => c.idEmpresa == id).ToListAsync();
+            foreach (var veiculo in veiculos) 
+            {
+                if (veiculo.idEmpresa == id)
+                    return true;
+            }
+
+            return false;
+        }
+
+        public async Task DeleteUsersAsync(int id) 
+        {
+            var users = await _context.Users.Where(c => c.EmpresaId == id).ToListAsync();
+            foreach(var user in users)
+                await _userManager.DeleteAsync(user);
+        }
+
+
         // POST: Empresas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -186,6 +206,9 @@ namespace Tp_Pweb_22_23.Controllers
             var empresa = await _context.Empresa.FindAsync(id);
             if (empresa != null)
             {
+                if(await CheckVeiculosEmpresa(id) == true)
+                    return Problem("Empresa possui veiculos.");
+                await DeleteUsersAsync(id);
                 _context.Empresa.Remove(empresa);
             }
             

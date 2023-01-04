@@ -4,15 +4,13 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Utilizadores</h1>
+<h1>Funcionarios da Empresa</h1>
 
 @if (User.IsInRole("Gestor"))
 {
-
     <form method="get" asp-action="Create" asp-controller="UserRolesManager">
         <button class="btn btn-dark" >Adicionar Funcionario</button>
     </form>
-
 @*    <p>
         <a asp-action="Create">Adicionar novo utilizador</a>
     </p>*@
