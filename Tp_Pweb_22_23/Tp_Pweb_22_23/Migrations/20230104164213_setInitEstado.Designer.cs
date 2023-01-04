@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tp_Pweb_22_23.Data;
 
@@ -11,9 +12,10 @@ using Tp_Pweb_22_23.Data;
 namespace Tp_Pweb_22_23.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230104164213_setInitEstado")]
+    partial class setInitEstado
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -300,8 +302,17 @@ namespace Tp_Pweb_22_23.Migrations
                     b.Property<int>("ESTADO")
                         .HasColumnType("int");
 
-                    b.Property<string>("FuncionarioId")
+                    b.Property<bool>("Entrega")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("FuncionarioId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FuncionarioId1")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Leventamento")
+                        .HasColumnType("bit");
 
                     b.Property<int>("NumeroKm")
                         .HasColumnType("int");
@@ -314,7 +325,7 @@ namespace Tp_Pweb_22_23.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FuncionarioId");
+                    b.HasIndex("FuncionarioId1");
 
                     b.HasIndex("ReservaId");
 
@@ -471,7 +482,7 @@ namespace Tp_Pweb_22_23.Migrations
                 {
                     b.HasOne("Tp_Pweb_22_23.Models.ApplicationUser", "Funcionario")
                         .WithMany()
-                        .HasForeignKey("FuncionarioId");
+                        .HasForeignKey("FuncionarioId1");
 
                     b.HasOne("Tp_Pweb_22_23.Models.Reserva", "Reserva")
                         .WithMany("estadoVeiculos")

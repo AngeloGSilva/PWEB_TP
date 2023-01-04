@@ -3,14 +3,14 @@
 namespace Tp_Pweb_22_23.Models
 {
     public enum ESTADO{
-        Recolher, Entregar
+        Pendente,Recolher, Entregar, Concluida, Cancelada
     }
 
     public class Reserva
     {
         public int Id { get; set; }
         [Display(Name = "Estado da Reserva")]
-        public ESTADO Estado { get; set; } = ESTADO.Recolher;
+        public ESTADO Estado { get; set; } = ESTADO.Pendente;
         [Display(Name = "Data de recolha")]
         [DataType(DataType.Date)]
         public DateTime DataRecolha { get; set; }

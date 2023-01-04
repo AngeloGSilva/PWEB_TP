@@ -43,13 +43,12 @@ namespace Tp_Pweb_22_23.Controllers
 
             else if (User.IsInRole("Gestor") || User.IsInRole("Funcionario"))
             {
-                var query = from r in _context.Reserva
-                            where (from v in _context.Veiculo
-                                   where v.idEmpresa == user.EmpresaId
-                                   select v).Contains(r.Veiculo)
-                            select r;
+                var reservasComVeiculosDaMesmaEmpresa = from r in _context.Reserva
+                                                        join v in _context.Veiculo on r.VeiculoId equals v.Id
+                                                        where v.idEmpresa == user.EmpresaId
+                                                        select r;
 
-                return View(query);
+                return View(reservasComVeiculosDaMesmaEmpresa);
             }
             else 
             {
@@ -59,6 +58,7 @@ namespace Tp_Pweb_22_23.Controllers
             //var applicationDbContext = _context.Reserva.Include(r => r.Cliente).Include(r => r.Veiculo);
             //return View(await applicationDbContext.ToListAsync());
         }
+
 
         // GET: Reservas/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -79,6 +79,72 @@ namespace Tp_Pweb_22_23.Controllers
 
             return View(reserva);
         }
+
+
+        public async Task<IActionResult> ConfirmReserva(int? id) 
+        {
+            var user = GetCurrentUser();
+            var reserva = _context.Reserva.Where(c => c.Id == id).FirstOrDefault();
+
+            var VeiculoReservaEmpresaId = (from v in _context.Veiculo
+                        join r in _context.Reserva on v.Id equals r.VeiculoId
+                        where r.Id == reserva.Id
+                        select v.idEmpresa).FirstOrDefault();
+            //query = query.FirstOrDefault();
+            if (reserva.Estado == ESTADO.Pendente) 
+            {
+                if (VeiculoReservaEmpresaId == user.EmpresaId && (User.IsInRole("Gestor") || User.IsInRole("Funcionario")))
+                {
+                    reserva.Estado = ESTADO.Recolher;
+                    _context.Update(reserva);
+                    await _context.SaveChangesAsync();
+                }
+                else 
+                {
+                    TempData["Error"] = String.Format("Utilizador sem autoridade para realizar operacao");
+                }
+            }
+            else 
+            {
+                TempData["Error"] = String.Format("Reserva nao se encontra pendente");
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> TratarVeiculoReserva(int? id) 
+        {
+            var user = GetCurrentUser();
+            var reserva = _context.Reserva.Where(c => c.Id == id).FirstOrDefault();
+
+            var VeiculoReservaEmpresaId = (from v in _context.Veiculo
+                                           join r in _context.Reserva on v.Id equals r.VeiculoId
+                                           where r.Id == reserva.Id
+                                           select v.idEmpresa).FirstOrDefault();
+            //query = query.FirstOrDefault();
+            if (reserva.Estado == ESTADO.Recolher || reserva.Estado == ESTADO.Entregar)
+            {
+                if (VeiculoReservaEmpresaId == user.EmpresaId && (User.IsInRole("Gestor") || User.IsInRole("Funcionario")))
+                {
+                    return RedirectToCreateEstado(user.Id, reserva.Id, reserva.Estado);
+                }
+                else
+                {
+                    TempData["Error"] = String.Format("Utilizador sem autoridade para realizar operacao");
+                }
+            }
+            else
+            {
+                TempData["Error"] = String.Format("Reserva nao se encontra em Recolha ou em Entrega");
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult RedirectToCreateEstado(string FuncionarioId, int ReservaId, ESTADO EstadoReserva)
+        {
+            return RedirectToAction("Create", "EstadoVeiculos", new { FuncionarioId = FuncionarioId, ReservaId = ReservaId, EstadoReserva = EstadoReserva });
+        }
+
 
         // GET: Reservas/Create
         [Authorize(Roles = "Admin")]

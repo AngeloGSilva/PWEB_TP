@@ -56,7 +56,22 @@
                 @Html.DisplayFor(modelItem => item.Cliente.Id)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+              @if (item.Estado == ESTADO.Pendente && (User.IsInRole("Funcionario") || User.IsInRole("Gestor")))
+                    {
+                        <a asp-action="ConfirmReserva" asp-route-id="@item.Id">Confirmar</a>
+                    }
+                    else if ((item.Estado == ESTADO.Recolher || item.Estado == ESTADO.Entregar) && (User.IsInRole("Funcionario") || User.IsInRole("Gestor")))
+                    {
+                        <a asp-action="TratarVeiculoReserva" asp-route-id="@item.Id">
+                            @if (item.Estado == ESTADO.Recolher)
+                            {
+                                <text>Entregar a Cliente</text>
+                            }else
+                            {
+                                <text>Recolher de Cliente</text>
+                            }</a>
+                    }
+                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
             </td>

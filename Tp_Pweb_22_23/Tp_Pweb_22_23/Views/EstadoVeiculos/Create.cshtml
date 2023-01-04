@@ -6,22 +6,12 @@
 
 <h1>Adicionar novo estado</h1>
 
-<h4>Estado do Veiculo</h4>
+<h4>Estado do Veiculo: @ViewData["EstadoReserva"]</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Entrega" /> @Html.DisplayNameFor(model => model.Entrega)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Leventamento" /> @Html.DisplayNameFor(model => model.Leventamento)
-                </label>
-            </div>
             <div class="form-group">
                 <label asp-for="NumeroKm" class="control-label"></label>
                 <input asp-for="NumeroKm" class="form-control" />
@@ -29,22 +19,25 @@
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Danos" /> @Html.DisplayNameFor(model => model.Danos)
+                    <input class="form-check-input" id="DanosCheck" asp-for="Danos" /> @Html.DisplayNameFor(model => model.Danos)
                 </label>
             </div>
             <div class="form-group">
                 <label asp-for="Observacoes" class="control-label"></label>
-                <input asp-for="Observacoes" class="form-control" />
+                <input disabled asp-for="Observacoes" id="ObsText" class="form-control" />
                 <span asp-validation-for="Observacoes" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FuncionarioId" class="control-label"></label>
-                <input asp-for="FuncionarioId" class="form-control" />
-                <span asp-validation-for="FuncionarioId" class="text-danger"></span>
+                <input type="hidden" name="FuncionarioId" asp-for="FuncionarioId" class="form-control" value="@ViewBag.EmpregadoId" />@ViewBag.EmpregadoId
             </div>
             <div class="form-group">
                 <label asp-for="ReservaId" class="control-label"></label>
-                <select asp-for="ReservaId" class ="form-control" asp-items="ViewBag.ReservaId"></select>
+                <input type="hidden" name="ReservaId" asp-for="ReservaId" class="form-control" value="@ViewBag.ReservaId" />@ViewBag.ReservaId
+            </div>
+            <div class="form-group">
+                <label asp-for="ESTADO" class="control-label"></label>
+                <input type="hidden" name="ESTADO" asp-for="ESTADO" class="form-control" value="@ViewData["EstadoReserva"]" />@ViewData["EstadoReserva"]
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -58,5 +51,14 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+        <script>
+            document.getElementById('DanosCheck').addEventListener('change', function () {
+                document.getElementById('ObsText').disabled = !this.checked;
+            });
+        </script>
+
+    }
 }

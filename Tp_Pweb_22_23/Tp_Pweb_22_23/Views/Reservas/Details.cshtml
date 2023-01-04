@@ -19,13 +19,13 @@
             @Html.DisplayNameFor(model => model.DataRecolha)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DataRecolha.ToString("dd MMMM yyyy"))
+            @Html.DisplayFor(model => model.DataRecolha, "{0:dd MMMM yyyy}")
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.DataEntrega)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DataEntrega.ToString("dd MMMM yyyy"))
+            @Html.DisplayFor(model => model.DataEntrega, "{0:dd MMMM yyyy}")
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Total)

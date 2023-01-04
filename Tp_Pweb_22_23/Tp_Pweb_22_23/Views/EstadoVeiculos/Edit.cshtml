@@ -13,16 +13,6 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Entrega" /> @Html.DisplayNameFor(model => model.Entrega)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Leventamento" /> @Html.DisplayNameFor(model => model.Leventamento)
-                </label>
-            </div>
             <div class="form-group">
                 <label asp-for="NumeroKm" class="control-label"></label>
                 <input asp-for="NumeroKm" class="form-control" />

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,17 +14,42 @@ namespace Tp_Pweb_22_23.Controllers
     public class EstadoVeiculosController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public EstadoVeiculosController(ApplicationDbContext context)
+        public EstadoVeiculosController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
+        }
+
+        private ApplicationUser GetCurrentUser()
+        {
+            var user = _context.Users
+                .Where(u => u.UserName == User.Identity.Name)
+                .Include(u => u.Empresa)
+                .FirstOrDefault();
+            return user;
         }
 
         // GET: EstadoVeiculos
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.EstadoVeiculo.Include(e => e.Reserva);
-            return View(await applicationDbContext.ToListAsync());
+            var funcionario = GetCurrentUser();
+            var estados = await _context.EstadoVeiculo.ToListAsync();
+            var estadosVeiculosEmpresa = new List<EstadoVeiculo>();
+            foreach (var estado in estados) 
+            {
+                var idEmpresa = _context.Reserva.Where(r => r.Id == estado.ReservaId && r.VeiculoId != null)
+                        .Select(r => r.Veiculo.idEmpresa)
+                        .FirstOrDefault();
+
+                if (funcionario.EmpresaId == idEmpresa) 
+                {
+                    estadosVeiculosEmpresa.Add(estado);
+                }
+            }
+
+            return View(estadosVeiculosEmpresa);
         }
 
         // GET: EstadoVeiculos/Details/5
@@ -46,9 +72,11 @@ namespace Tp_Pweb_22_23.Controllers
         }
 
         // GET: EstadoVeiculos/Create
-        public IActionResult Create()
+        public IActionResult Create(string FuncionarioId,int ReservaId, ESTADO EstadoReserva)
         {
-            ViewData["ReservaId"] = new SelectList(_context.Reserva, "Id", "Id");
+            ViewData["ReservaId"] = ReservaId;
+            ViewData["EmpregadoId"] = FuncionarioId;
+            ViewData["EstadoReserva"] = EstadoReserva;
             return View();
         }
 
@@ -57,15 +85,27 @@ namespace Tp_Pweb_22_23.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Entrega,Leventamento,NumeroKm,Danos,Observacoes,FuncionarioId,ReservaId")] EstadoVeiculo estadoVeiculo)
+        public async Task<IActionResult> Create([Bind("NumeroKm,Danos,Observacoes,FuncionarioId,ReservaId,ESTADO")] EstadoVeiculo estadoVeiculo)
         {
+            var reserva = _context.Reserva.Where(c=> c.Id == estadoVeiculo.ReservaId).FirstOrDefault();
+            var funcionario = await _userManager.FindByIdAsync(estadoVeiculo.FuncionarioId);
+            estadoVeiculo.Reserva = reserva;
+            estadoVeiculo.Funcionario = funcionario;
             if (ModelState.IsValid)
             {
+                if (reserva.Estado == ESTADO.Entregar)
+                {
+                    reserva.Estado = ESTADO.Concluida;
+                } else if (reserva.Estado == ESTADO.Recolher) 
+                {
+                    reserva.Estado = ESTADO.Entregar;
+                }
+                _context.Update(reserva);
                 _context.Add(estadoVeiculo);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ReservaId"] = new SelectList(_context.Reserva, "Id", "Id", estadoVeiculo.ReservaId);
+            //ViewData["ReservaId"] = new SelectList(_context.Reserva, "Id", "Id", estadoVeiculo.ReservaId);
             return View(estadoVeiculo);
         }
 
@@ -91,7 +131,7 @@ namespace Tp_Pweb_22_23.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Entrega,Leventamento,NumeroKm,Danos,Observacoes,FuncionarioId,ReservaId")] EstadoVeiculo estadoVeiculo)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,NumeroKm,Danos,Observacoes,FuncionarioId,ReservaId")] EstadoVeiculo estadoVeiculo)
         {
             if (id != estadoVeiculo.Id)
             {
