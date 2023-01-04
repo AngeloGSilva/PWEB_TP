@@ -111,16 +111,22 @@ namespace Tp_Pweb_22_23.Areas.Identity.Pages.Account
             returnUrl ??= Url.Content("~/");
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-
+            var user = new ApplicationUser();
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var user = await _context.Users.Where(c => c.Email == Input.Email).FirstAsync();
+                try
+                {
+                    user = await _context.Users.Where(c => c.Email == Input.Email).FirstAsync();
+                }
+                catch (Exception e) {
+                    
+                }
                 if (user != null)
                     if (!user.IsActive) {
-                        ModelState.AddModelError(string.Empty, "Esta conta foi desativada. Se considera tratar-se de um erro, por favor contacte um Gestor da empresa.");
-                        return Page();
+                        _logger.LogWarning("Conta bloqueada.");
+                        return RedirectToPage("./Lockout");
                     }
 
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);

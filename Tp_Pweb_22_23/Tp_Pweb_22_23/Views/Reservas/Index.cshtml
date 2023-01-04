@@ -71,9 +71,14 @@
                                 <text>Recolher de Cliente</text>
                             }</a>
                     }
-                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+                    else if (item.Estado == ESTADO.Pendente && (User.IsInRole("Funcionario") || User.IsInRole("Gestor") || User.IsInRole("Cliente")))
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.Id">Cancelar Reserva</a>
+                    }
+                    <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
+
+@*                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>*@
             </td>
         </tr>
 }

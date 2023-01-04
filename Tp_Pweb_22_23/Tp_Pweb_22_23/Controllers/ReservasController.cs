@@ -50,11 +50,11 @@ namespace Tp_Pweb_22_23.Controllers
 
                 return View(reservasComVeiculosDaMesmaEmpresa);
             }
-            else 
+            if(User.IsInRole("Cliente"))
             {
                 return View(await _context.Reserva.Where(c=> c.ClienteId == user.Id).ToListAsync());
             }
-
+            return (NotFound());
             //var applicationDbContext = _context.Reserva.Include(r => r.Cliente).Include(r => r.Veiculo);
             //return View(await applicationDbContext.ToListAsync());
         }
