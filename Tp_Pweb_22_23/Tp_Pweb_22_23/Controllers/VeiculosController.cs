@@ -46,7 +46,8 @@ namespace Tp_Pweb_22_23.Controllers
         {
             var veiculos = new AllVeiculosViewModel();
             ViewData["EmpresaId"] = new SelectList(_context.Empresa.ToList(), "Id", "Nome");
-            veiculos.ListaDeVeiculos = await _context.Veiculo.Where(c => c.Disponivel == true).ToListAsync();
+            //veiculos.ListaDeVeiculos = await _context.Veiculo.Where(c => c.Disponivel == true).ToListAsync();
+            veiculos.ListaDeVeiculos = await _context.Veiculo.Where(v => _context.Empresa.Any(e => e.Id == v.idEmpresa && e.Ativo == true) && v.Disponivel == true).ToListAsync();
             veiculos.NumResultados = veiculos.ListaDeVeiculos.Count;
             return View(veiculos);
         }
@@ -162,7 +163,7 @@ namespace Tp_Pweb_22_23.Controllers
                 else
                 {
                     TempData["Error"] = String.Format("Imagem demasiado Grande.");
-                    return RedirectToAction(nameof(Create));
+                    return View(veiculo);
                 }
             }
             return View(veiculo);

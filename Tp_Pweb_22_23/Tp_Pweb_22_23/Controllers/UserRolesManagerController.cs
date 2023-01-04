@@ -100,68 +100,41 @@ namespace Tp_Pweb_22_23.Controllers
             return new List<string>(await _userManager.GetRolesAsync(user));
         }
 
-        public async Task<IActionResult> Details(string userId)
+        //TODO nao esta a dar
+        public async Task<IActionResult> Details(string? id)
         {
-
-            if (userId == null)
+            if (id == null || _context.Users == null)
             {
                 return NotFound();
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
-
+            var user = await _context.Users
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (user == null)
             {
-                return RedirectToAction("Index");
-            }
-
-            ViewBag.userId = userId;
-            ViewData["UserName"] = user.UserName;
-            ViewBag.Avatar = user.Avatar;
-
-            List<ManageUserRolesViewModel> roles = new List<ManageUserRolesViewModel>();
-            var userRoles = await _userManager.GetRolesAsync(await _userManager.Users.Where(u => u.Id == userId).FirstAsync());
-            var listRoles = await _roleManager.Roles.ToListAsync();
-
-            foreach (var role in listRoles)
-            {
-                ManageUserRolesViewModel roleViewModel = new ManageUserRolesViewModel();
-                roleViewModel.RoleId = role.Id;
-                roleViewModel.RoleName = role.Name;
-                roleViewModel.Selected = userRoles.Contains(role.Name);
-                roleViewModel.IsActivo = user.IsActive;
-                roles.Add(roleViewModel);
-            }
-
-            return View(roles);
-        }
-        [HttpPost]
-        public async Task<IActionResult> Details(List<ManageUserRolesViewModel> model,
-       string userId)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
                 return NotFound();
-
-            var roles = await _userManager.GetRolesAsync(user);
-            var result = await _userManager.RemoveFromRolesAsync(user, roles);
-
-            if (!result.Succeeded)
-            {
-                ModelState.AddModelError("", "Cannot remove user existing roles");
-                return View(model);
             }
 
-            result = await _userManager.AddToRolesAsync(user,
-                model.Where(x => x.Selected).Select(y => y.RoleName));
-
-            if (!result.Succeeded)
-            {
-                ModelState.AddModelError("", "Cannot add selected roles to user");
-                return View(model);
-            }
-            return RedirectToAction("Index");
+            return View(user);
         }
+
+
+        //[HttpPost]
+        //public async Task<IActionResult> Details(string UserId)
+        //{
+        //    if (UserId == null || _context.Users == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var user = _context.Users.Where(c => c.Id == UserId);
+        //    if (user == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(user);
+        //}
 
 
         [Authorize(Roles = "Gestor")]
@@ -288,29 +261,29 @@ namespace Tp_Pweb_22_23.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: UserManager/Delete/5
-        public async Task<IActionResult> Delete(string? id)
-        {
-            if (id == null || _context.Users == null)
-            {
-                return NotFound();
-            }
+        //// GET: UserManager/Delete/5
+        //public async Task<IActionResult> Delete(string? id)
+        //{
+        //    if (id == null || _context.Users == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
+        //    var user = await _context.Users
+        //        .FirstOrDefaultAsync(m => m.Id == id);
+        //    if (user == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            if (user.UserName == User.Identity.Name)
-            {
-                TempData["Error"] = "You cannot delete your own profile!";
-                return RedirectToAction("Index");
-            }
+        //    if (user.UserName == User.Identity.Name)
+        //    {
+        //        TempData["Error"] = "You cannot delete your own profile!";
+        //        return RedirectToAction("Index");
+        //    }
 
-            return View(user);
-        }
+        //    return View(user);
+        //}
     }
 
 }

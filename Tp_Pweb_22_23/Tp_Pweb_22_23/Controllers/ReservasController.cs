@@ -40,25 +40,24 @@ namespace Tp_Pweb_22_23.Controllers
             {
                 return View(await _context.Reserva.Include(r => r.Cliente).Include(r => r.Veiculo).ToListAsync());
             }
-
             else if (User.IsInRole("Gestor") || User.IsInRole("Funcionario"))
             {
                 var reservasComVeiculosDaMesmaEmpresa = from r in _context.Reserva
                                                         join v in _context.Veiculo on r.VeiculoId equals v.Id
-                                                        where v.idEmpresa == user.EmpresaId
+                                                        where v.idEmpresa == user.EmpresaId && v.Disponivel == true
                                                         select r;
 
                 return View(reservasComVeiculosDaMesmaEmpresa);
             }
-            if(User.IsInRole("Cliente"))
+            if (User.IsInRole("Cliente"))
             {
-                return View(await _context.Reserva.Where(c=> c.ClienteId == user.Id).ToListAsync());
+                //_context.Veiculo.Where(v => _context.Empresa.Any(e => e.Id == v.idEmpresa && e.Ativo == true) && v.Disponivel == true);
+                return View(await _context.Reserva.Where(r => r.Estado == ESTADO.Concluida || _context.Veiculo.Any(v => v.Id == r.VeiculoId && _context.Empresa.Any(e => e.Id == v.idEmpresa && e.Ativo == true))).ToListAsync());
             }
             return (NotFound());
             //var applicationDbContext = _context.Reserva.Include(r => r.Cliente).Include(r => r.Veiculo);
             //return View(await applicationDbContext.ToListAsync());
         }
-
 
         // GET: Reservas/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -81,17 +80,17 @@ namespace Tp_Pweb_22_23.Controllers
         }
 
 
-        public async Task<IActionResult> ConfirmReserva(int? id) 
+        public async Task<IActionResult> ConfirmReserva(int? id)
         {
             var user = GetCurrentUser();
             var reserva = _context.Reserva.Where(c => c.Id == id).FirstOrDefault();
 
             var VeiculoReservaEmpresaId = (from v in _context.Veiculo
-                        join r in _context.Reserva on v.Id equals r.VeiculoId
-                        where r.Id == reserva.Id
-                        select v.idEmpresa).FirstOrDefault();
+                                           join r in _context.Reserva on v.Id equals r.VeiculoId
+                                           where r.Id == reserva.Id
+                                           select v.idEmpresa).FirstOrDefault();
             //query = query.FirstOrDefault();
-            if (reserva.Estado == ESTADO.Pendente) 
+            if (reserva.Estado == ESTADO.Pendente)
             {
                 if (VeiculoReservaEmpresaId == user.EmpresaId && (User.IsInRole("Gestor") || User.IsInRole("Funcionario")))
                 {
@@ -99,19 +98,19 @@ namespace Tp_Pweb_22_23.Controllers
                     _context.Update(reserva);
                     await _context.SaveChangesAsync();
                 }
-                else 
+                else
                 {
                     TempData["Error"] = String.Format("Utilizador sem autoridade para realizar operacao");
                 }
             }
-            else 
+            else
             {
                 TempData["Error"] = String.Format("Reserva nao se encontra pendente");
             }
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> TratarVeiculoReserva(int? id) 
+        public async Task<IActionResult> TratarVeiculoReserva(int? id)
         {
             var user = GetCurrentUser();
             var reserva = _context.Reserva.Where(c => c.Id == id).FirstOrDefault();
@@ -262,14 +261,14 @@ namespace Tp_Pweb_22_23.Controllers
             {
                 _context.Reserva.Remove(reserva);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ReservaExists(int id)
         {
-          return _context.Reserva.Any(e => e.Id == id);
+            return _context.Reserva.Any(e => e.Id == id);
         }
     }
 }

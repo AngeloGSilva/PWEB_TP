@@ -112,6 +112,7 @@ namespace Tp_Pweb_22_23.Areas.Identity.Pages.Account
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             var user = new ApplicationUser();
+            var empresaUser = new Empresa();
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout
@@ -119,12 +120,13 @@ namespace Tp_Pweb_22_23.Areas.Identity.Pages.Account
                 try
                 {
                     user = await _context.Users.Where(c => c.Email == Input.Email).FirstAsync();
+                    empresaUser = await _context.Empresa.Where(c=> c.Id == user.EmpresaId).FirstAsync();    
                 }
                 catch (Exception e) {
                     
                 }
                 if (user != null)
-                    if (!user.IsActive) {
+                    if (!user.IsActive || !empresaUser.Ativo) {
                         _logger.LogWarning("Conta bloqueada.");
                         return RedirectToPage("./Lockout");
                     }

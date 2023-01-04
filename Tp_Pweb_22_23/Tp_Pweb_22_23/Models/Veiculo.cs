@@ -7,7 +7,7 @@ namespace Tp_Pweb_22_23.Models
         public byte[]? Foto { get; set; }
         public int Id { get; set; }
         public string Marca { get; set; }
-        public bool Disponivel { get; set; }
+        public bool Disponivel { get; set; } = true;
         public string Modelo { get; set; }
         [Display(Name = "Localização")]
         public string Localizacao { get; set; }

@@ -72,9 +72,13 @@ namespace Tp_Pweb_22_23.Controllers
         }
 
         // GET: EstadoVeiculos/Create
-        public IActionResult Create(string FuncionarioId,int ReservaId, ESTADO EstadoReserva)
+        public IActionResult Create(string FuncionarioId, int ReservaId, ESTADO EstadoReserva)
         {
+            var reserva = _context.Reserva.Where(c => c.Id == ReservaId).FirstOrDefault();
+            var funcionario = _context.Users.Where(c => c.Id == FuncionarioId).FirstOrDefault();
+
             ViewData["ReservaId"] = ReservaId;
+            ViewData["EmpregadoEmail"] = funcionario.Email;
             ViewData["EmpregadoId"] = FuncionarioId;
             ViewData["EstadoReserva"] = EstadoReserva;
             return View();
