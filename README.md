@@ -50,7 +50,7 @@
 - [ ] Rejeitar uma reserva
 - [X] Entregar um veículo ao cliente (levantamento do veículo pelo cliente) 
 - [X] Receber um veículo do cliente (entrega do veículo pelo cliente)
-- [X]Assinalar o estado em que o veículo é entregue/levantado ao/pelo cliente_
+- [x]Assinalar o estado em que o veículo é entregue/levantado ao/pelo cliente_
 
 
 [Cliente] Área de clientes
