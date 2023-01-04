@@ -3,13 +3,12 @@ using System.Xml.Linq;
 
 namespace Tp_Pweb_22_23.Models.ViewModels
 {
-    public class SearchViewModel
+    public class SearchResultadosViewModel
     {
-        public string Localizacao { get; set; }
+        public List<Veiculo> VeiculosDisponiveis { get; set; }
         [Display(Name = "Data de recolha")]
         public DateTime? DataRecolha { get; set; }
         [Display(Name = "Data de entrega")]
         public DateTime? DataEntrega { get; set; }
-        public int IdCategoria { get; set; }
     }
 }

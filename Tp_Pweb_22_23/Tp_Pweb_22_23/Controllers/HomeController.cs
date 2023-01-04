@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Security.Claims;
 using Tp_Pweb_22_23.Data;
 using Tp_Pweb_22_23.Models;
 using Tp_Pweb_22_23.Models.ViewModels;
@@ -21,49 +22,117 @@ namespace Tp_Pweb_22_23.Controllers
             _context = context;
         }
 
-        public IEnumerable<Reserva> getReservasVeiculo(Veiculo veiculo) 
+        public IEnumerable<Reserva> getReservasVeiculo(Veiculo veiculo)
         {
-            List<Reserva> reservas = new List<Reserva>();
-            List<Reserva> reservasDoVeiculo = _context.Reserva.ToList();
-
-            foreach (var reserva in reservasDoVeiculo) 
+            List<Reserva> reservasDoVeiculo = new List<Reserva>();
+            List<Reserva> reservas = _context.Reserva.ToList();
+            if (reservas.Count == 0)
+                return null;
+            foreach (var reserva in reservas)
             {
-                if (reserva.VeiculoId == veiculo.Id) 
+                if (reserva.VeiculoId == veiculo.Id)
                 {
-                    reservas.Add(reserva);
+                    reservasDoVeiculo.Add(reserva);
                 }
             }
-            return reservas;
+
+            if (reservasDoVeiculo.Count != 0)
+            {
+                return reservasDoVeiculo;
+            }
+            return null;
         }
 
-        public async Task<IActionResult> SearchAsync( [Bind("Localizacao,DataRecolha,DataEntrega,Categoria")] SearchViewModel search) 
+
+        private bool IsValidDate(DateTime? Recolha, DateTime? Entrega, Reserva reserva)
         {
-            List<Veiculo> veiculosDisponiveis = new List<Veiculo>();
+            if (Recolha > reserva.DataEntrega)
+            {
+                return true;
+            }
+            else if (Entrega <= reserva.DataEntrega && Recolha <= reserva.DataEntrega)
+            {
+                return false;
+            }
+            //verificar esta condicap
+            else if (Recolha < reserva.DataEntrega)
+            {
+                return false;
+            } else if (Recolha == reserva.DataEntrega) 
+            {
+                return false;
+            }
+            return true;
+        }
+
+
+        public async Task<IActionResult> SearchAsync([Bind("Localizacao,DataRecolha,DataEntrega,IdCategoria")] SearchViewModel search)
+        {
+            //List<Veiculo> veiculosDisponiveis = new List<Veiculo>();
+            var searchResultados = new SearchResultadosViewModel();
+            searchResultados.VeiculosDisponiveis = new List<Veiculo>();
 
             if (search.DataRecolha == null && search.DataEntrega == null)
             {
-                veiculosDisponiveis = await _context.Veiculo.Where(c => c.Disponivel == true && c.Localizacao == search.Localizacao).ToListAsync();
-                return View(veiculosDisponiveis);
+                searchResultados.VeiculosDisponiveis = await _context.Veiculo.Where(c => c.Disponivel == true && c.Localizacao.ToLower() == search.Localizacao.ToLower() && c.idCategoria == search.IdCategoria).ToListAsync();
+                searchResultados.DataEntrega = search.DataEntrega;
+                searchResultados.DataRecolha = search.DataRecolha;
+                return View(searchResultados);
             }
-            else 
+            else
             {
-                veiculosDisponiveis = await _context.Veiculo.Where(c => c.Disponivel == true && c.Localizacao == search.Localizacao).ToListAsync();
-                IEnumerable<Veiculo> veiculosFinal;
+                var veiculosDisponiveis = await _context.Veiculo.Where(c => c.Disponivel == true && c.Localizacao.ToLower() == search.Localizacao.ToLower() && c.idCategoria == search.IdCategoria).ToListAsync();
+                //IEnumerable<Veiculo> veiculosFinal;
                 //IEnumerable<Reserva> reservas = await _context.Reserva.ToListAsync();
-                var flag = false;
-                foreach (var veiculo in veiculosDisponiveis) 
+                var flag = false; //para nao entrar no isValidDate mais q uma vez
+                foreach (var veiculo in veiculosDisponiveis)
                 {
-                    foreach (var reserva in getReservasVeiculo(veiculo)) 
+                    flag = false;
+                    if (getReservasVeiculo(veiculo) != null)
                     {
-                        if (search.DataRecolha <= reserva.DataRecolha || search.DataEntrega >= reserva.DataEntrega) 
+                        foreach (var reserva in getReservasVeiculo(veiculo))
                         {
-                            veiculosDisponiveis.Add(veiculo);
+                            if (IsValidDate(search.DataRecolha, search.DataEntrega, reserva) && !flag)
+                            {
+                                flag = true;
+                                searchResultados.VeiculosDisponiveis.Add(veiculo);
+                            }
                         }
                     }
+                    else
+                        searchResultados.VeiculosDisponiveis.Add(veiculo);
                 }
 
             }
-            return View(veiculosDisponiveis);
+            searchResultados.DataEntrega = search.DataEntrega;
+            searchResultados.DataRecolha = search.DataRecolha;
+            return View(searchResultados);
+        }
+
+
+        private ApplicationUser GetCurrentUser()
+        {
+            var user = _context.Users
+                .Where(u => u.UserName == User.Identity.Name)
+                .Include(u => u.Empresa)
+                .FirstOrDefault();
+            return user;
+        }
+
+        public async Task<IActionResult> FazReservaAsync([Bind("IdVeiculo,DataRecolha,DataEntrega")] FazReservaViewModel reservaSolicitada)
+        {
+            var reserva = new Reserva
+            {
+                DataRecolha = reservaSolicitada.DataRecolha,
+                DataEntrega = reservaSolicitada.DataEntrega,
+                VeiculoId = reservaSolicitada.IdVeiculo,
+                Veiculo = await _context.Veiculo.Where(c => c.Id == reservaSolicitada.IdVeiculo).FirstAsync(),
+                ClienteId = GetCurrentUser().Id
+            };
+            _context.Add(reserva);
+            await _context.SaveChangesAsync();
+            //var veiculo = await _context.Veiculo.Include("reservas").Where(c => c.Id == reservaSolicitada.IdVeiculo).FirstAsync();
+            return RedirectToAction("Details", "Reservas", new { id = reserva.Id });
         }
 
         public IActionResult Index()

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Tp_Pweb_22_23.Models.Veiculo>
+﻿@model Tp_Pweb_22_23.Models.ViewModels.SearchResultadosViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -14,8 +14,9 @@
 
 <h1>Os nossos Automóveis</h1>
 
+@if(Model.VeiculosDisponiveis.Count != 0){
 <div class="row row-cols-1 row-cols-md-3 g-4">
-    @foreach (var item in Model)
+    @foreach (var item in Model.VeiculosDisponiveis)
     {
         <div class="col">
             <div class="card h-100 align-items-center">
@@ -30,12 +31,22 @@
                 <div class="card-body">
                     <h5 class="card-title">Card title</h5>
                     <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                    <a class="w-50 btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.Id"> Saber mais</a>
+                        <form method="post" asp-action="FazReserva">
+                            <input type="hidden" asp-for="DataRecolha" name="DataRecolha" value="@Model.DataRecolha">
+                            <input type="hidden" asp-for="DataEntrega" name="DataEntrega" value="@Model.DataEntrega">
+                            <input type="hidden" name="IdVeiculo" value="@item.Id">
+                            <button class="w-50 btn btn-sm btn-outline-secondary" type="submit">Reservar</button>
+                        </form>
                 </div>
                 <div class="card-footer w-100">
-                    <small class="text-muted">Localização:@item.Localizacao</small>
+                    <small class="text-muted">Data de Recolha: @Model.DataRecolha ... Data de Entrega: @Model.DataEntrega</small>
                 </div>
             </div>
         </div>
     }
 </div>
+
+}else
+{
+    <h2>Sem Veiculos Disponiveis</h2>
+}

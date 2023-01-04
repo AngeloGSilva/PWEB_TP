@@ -6,7 +6,7 @@ namespace Tp_Pweb_22_23.Models
     {
         public int Id { get; set; }
         [Display(Name = "Reserva ativa?")]
-        public bool Estado { get; set; }
+        public bool Estado { get; set; } = false;
         [Display(Name = "Data de recolha")]
         public DateTime DataRecolha { get; set; }
         [Display(Name = "Data de entrega")]

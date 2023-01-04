@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +20,7 @@ namespace Tp_Pweb_22_23.Controllers
         {
             _context = context;
         }
+
         private ApplicationUser GetCurrentUser()
         {
             var user = _context.Users
@@ -31,8 +34,30 @@ namespace Tp_Pweb_22_23.Controllers
         // GET: Reservas
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Reserva.Include(r => r.Cliente).Include(r => r.Veiculo);
-            return View(await applicationDbContext.ToListAsync());
+            var user = GetCurrentUser();
+
+            if (User.IsInRole("Admin"))
+            {
+                return View(await _context.Reserva.Include(r => r.Cliente).Include(r => r.Veiculo).ToListAsync());
+            }
+
+            else if (User.IsInRole("Gestor") || User.IsInRole("Funcionario"))
+            {
+                var query = from r in _context.Reserva
+                            where (from v in _context.Veiculo
+                                   where v.idEmpresa == user.EmpresaId
+                                   select v).Contains(r.Veiculo)
+                            select r;
+
+                return View(query);
+            }
+            else 
+            {
+                return View(await _context.Reserva.Where(c=> c.ClienteId == user.Id).ToListAsync());
+            }
+
+            //var applicationDbContext = _context.Reserva.Include(r => r.Cliente).Include(r => r.Veiculo);
+            //return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Reservas/Details/5
@@ -56,6 +81,7 @@ namespace Tp_Pweb_22_23.Controllers
         }
 
         // GET: Reservas/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             ViewData["ClienteId"] = new SelectList(_context.Users, "Id", "Id");
