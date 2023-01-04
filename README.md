@@ -6,7 +6,7 @@
 - [x] Adicionar registo de empresas - automaticamente cria um utilizador com perfil gestor, associado à empresa
 - [x] Editar registo de empresas
 - [] Apagar registo de empresas (apenas se ainda não existirem veículos)
-- [x] Ativar ou inativar empresas
+- [] Ativar ou inativar empresas
 
 ### Gestão de categorias de veículos
 - [x] Listar
