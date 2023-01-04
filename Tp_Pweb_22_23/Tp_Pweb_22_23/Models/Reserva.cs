@@ -2,15 +2,22 @@
 
 namespace Tp_Pweb_22_23.Models
 {
+    public enum ESTADO{
+        Recolher, Entregar
+    }
+
     public class Reserva
     {
         public int Id { get; set; }
-        [Display(Name = "Reserva ativa?")]
-        public bool Estado { get; set; } = false;
+        [Display(Name = "Estado da Reserva")]
+        public ESTADO Estado { get; set; } = ESTADO.Recolher;
         [Display(Name = "Data de recolha")]
+        [DataType(DataType.Date)]
         public DateTime DataRecolha { get; set; }
         [Display(Name = "Data de entrega")]
+        [DataType(DataType.Date)]
         public DateTime DataEntrega { get; set; }
+        public decimal? Total { get; set; }
         public int? VeiculoId { get; set; }
         public Veiculo? Veiculo { get; set; }
         public string ClienteId { get; set; }

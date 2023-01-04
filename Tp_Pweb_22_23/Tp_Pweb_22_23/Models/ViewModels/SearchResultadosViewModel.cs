@@ -10,5 +10,6 @@ namespace Tp_Pweb_22_23.Models.ViewModels
         public DateTime? DataRecolha { get; set; }
         [Display(Name = "Data de entrega")]
         public DateTime? DataEntrega { get; set; }
+        public decimal? Total { get; set; }
     }
 }

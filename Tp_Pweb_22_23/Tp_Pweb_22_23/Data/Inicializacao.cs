@@ -13,8 +13,8 @@ namespace Tp_Pweb_22_23.Data
 
     public static class Inicializacao
     {
-        public static async Task CriaDadosIniciais(UserManager<ApplicationUser>
-userManager, RoleManager<IdentityRole> roleManager)
+        public static async Task CriaDadosIniciais(UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             //Adicionar default Roles
             await roleManager.CreateAsync(new IdentityRole(Roles.Admin.ToString()));
@@ -29,7 +29,8 @@ userManager, RoleManager<IdentityRole> roleManager)
                 PrimeiroNome = "Administrador",
                 UltimoNome = "Local",
                 EmailConfirmed = true,
-                PhoneNumberConfirmed = true
+                PhoneNumberConfirmed = true,
+                IsActive = true
             };
             var user = await userManager.FindByEmailAsync(defaultUser.Email);
             if (user == null)

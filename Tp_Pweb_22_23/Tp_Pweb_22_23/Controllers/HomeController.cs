@@ -71,6 +71,7 @@ namespace Tp_Pweb_22_23.Controllers
             //List<Veiculo> veiculosDisponiveis = new List<Veiculo>();
             var searchResultados = new SearchResultadosViewModel();
             searchResultados.VeiculosDisponiveis = new List<Veiculo>();
+            var numeroDeDias = GetNumeroDeDias((DateTime)search.DataRecolha, (DateTime)search.DataEntrega);
 
             if (search.DataRecolha == null && search.DataEntrega == null)
             {
@@ -96,16 +97,21 @@ namespace Tp_Pweb_22_23.Controllers
                             {
                                 flag = true;
                                 searchResultados.VeiculosDisponiveis.Add(veiculo);
+                                searchResultados.Total = numeroDeDias * veiculo.Preco;
                             }
                         }
                     }
                     else
+                    {
                         searchResultados.VeiculosDisponiveis.Add(veiculo);
+                        searchResultados.Total = numeroDeDias * veiculo.Preco;
+                    }
                 }
 
             }
             searchResultados.DataEntrega = search.DataEntrega;
             searchResultados.DataRecolha = search.DataRecolha;
+            
             return View(searchResultados);
         }
 
@@ -119,14 +125,29 @@ namespace Tp_Pweb_22_23.Controllers
             return user;
         }
 
+        private int GetNumeroDeDias(DateTime start,DateTime endDate) 
+        {
+            start = start.Date;
+            endDate = endDate.Date;
+
+            TimeSpan difference = endDate - start;
+
+            int numberOfDays = difference.Days;
+            return (numberOfDays);
+        }
+
         public async Task<IActionResult> FazReservaAsync([Bind("IdVeiculo,DataRecolha,DataEntrega")] FazReservaViewModel reservaSolicitada)
         {
+            var veiculo = await _context.Veiculo.Where(c => c.Id == reservaSolicitada.IdVeiculo).FirstAsync();
+            var numeroDays = GetNumeroDeDias(reservaSolicitada.DataRecolha, reservaSolicitada.DataEntrega);
+
             var reserva = new Reserva
             {
                 DataRecolha = reservaSolicitada.DataRecolha,
                 DataEntrega = reservaSolicitada.DataEntrega,
                 VeiculoId = reservaSolicitada.IdVeiculo,
-                Veiculo = await _context.Veiculo.Where(c => c.Id == reservaSolicitada.IdVeiculo).FirstAsync(),
+                Total = veiculo.Preco*numeroDays,
+                Veiculo = veiculo,
                 ClienteId = GetCurrentUser().Id
             };
             _context.Add(reserva);

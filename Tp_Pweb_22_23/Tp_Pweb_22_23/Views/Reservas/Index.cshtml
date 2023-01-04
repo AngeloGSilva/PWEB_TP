@@ -23,6 +23,9 @@
                 @Html.DisplayNameFor(model => model.DataEntrega)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Total)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Veiculo)
             </th>
             <th>
@@ -38,10 +41,13 @@
                 @Html.DisplayFor(modelItem => item.Estado)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DataRecolha)
+                    @Html.DisplayFor(modelItem => item.DataRecolha, "{0:dd MMMM yyyy}")
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DataEntrega)
+                    @Html.DisplayFor(modelItem => item.DataEntrega, "{0:dd MMMM yyyy}")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Total) Euros
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Veiculo.Id)

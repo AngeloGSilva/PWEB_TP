@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tp_Pweb_22_23.Data;
 
@@ -11,9 +12,10 @@ using Tp_Pweb_22_23.Data;
 namespace Tp_Pweb_22_23.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230104042211_totalReserva")]
+    partial class totalReserva
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -345,8 +347,8 @@ namespace Tp_Pweb_22_23.Migrations
                     b.Property<DateTime>("DataRecolha")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Estado")
-                        .HasColumnType("int");
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
 
                     b.Property<decimal?>("Total")
                         .HasColumnType("decimal(18,2)");
