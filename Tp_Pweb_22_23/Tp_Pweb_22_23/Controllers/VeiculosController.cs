@@ -53,49 +53,69 @@ namespace Tp_Pweb_22_23.Controllers
         }
 
 
+        // GET: Empresas/Procura
+        [HttpGet]
+        public async Task<IActionResult> Procura(string? texto)
+        {
+            if (texto == null)
+            {
+                var veiculos = await _context.Veiculo
+                    .ToListAsync();
+                return View("Index", veiculos);
+            }
+            else
+            {
+                var veiculosProcura = await _context.Veiculo
+                    .Where(c => c.Marca.ToLower().Contains(texto.ToLower()))
+                    .ToListAsync();
+                return View("Index", veiculosProcura);
+            }
+        }
+
+
         // GET: Veiculos
-        public async Task<IActionResult> Index(string sortOrder, string searchString, bool onlyAvailable)
+        public async Task<IActionResult> Index()
         {
             ViewData["CategoriaId"] = new SelectList(_context.Categoria.ToList(), "Id", "Nome");
             ViewData["EmpresaId"] = new SelectList(_context.Empresa.ToList(), "Id", "Nome");
-            ViewData["MarcaSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Name_desc" : "";
-            ViewData["PrecoSortParm"] = sortOrder== "Preco_asc" ? "Preco_desc" : "Preco_asc";
-            //ViewData["DisponivelSortParm"] = sortOrder == "Disponivel" ? "Indisponivel" : "Disponivel";
-            ViewData["CurrentFilter"] = searchString;
+            //ViewData["MarcaSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Name_desc" : "";
+            //ViewData["PrecoSortParm"] = sortOrder== "Preco_asc" ? "Preco_desc" : "Preco_asc";
+            ////ViewData["DisponivelSortParm"] = sortOrder == "Disponivel" ? "Indisponivel" : "Disponivel";
+            //ViewData["CurrentFilter"] = searchString;
+            //var funcionario = GetCurrentUser();
+
+            //var veiculosUtilizador = _context.Veiculo.Where(c => c.idEmpresa.Equals(funcionario.EmpresaId)).AsQueryable();
+            //if (onlyAvailable)
+            //{
+            //    veiculosUtilizador = veiculosUtilizador.Where(v => v.Disponivel);
+            //}
+
+            //if (!String.IsNullOrEmpty(searchString))
+            //{
+            //    veiculosUtilizador = veiculosUtilizador.Where(s => s.Marca.Contains(searchString)
+            //                           || s.Modelo.Contains(searchString));
+            //}
+
+
+            //switch (sortOrder)
+            //{
+            //    case "Name_desc":
+            //        veiculosUtilizador = veiculosUtilizador.OrderByDescending(p => p.Marca);
+            //        break;
+            //    case "Preco_asc":
+            //        veiculosUtilizador = veiculosUtilizador.OrderBy(p => p.Preco);
+            //        break;
+            //    case "Preco_desc":
+            //        veiculosUtilizador = veiculosUtilizador.OrderByDescending(p => p.Preco);
+            //        break;
+            //    default:
+            //        veiculosUtilizador = veiculosUtilizador.OrderBy(p => p.Marca);
+            //        break;
+            //}         
+
+            //return View(await veiculosUtilizador.ToListAsync());
             var funcionario = GetCurrentUser();
-
-            var veiculosUtilizador = _context.Veiculo.Where(c => c.idEmpresa.Equals(funcionario.EmpresaId)).AsQueryable();
-            if (onlyAvailable)
-            {
-                veiculosUtilizador = veiculosUtilizador.Where(v => v.Disponivel);
-            }
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                veiculosUtilizador = veiculosUtilizador.Where(s => s.Marca.Contains(searchString)
-                                       || s.Modelo.Contains(searchString));
-            }
-
-
-            switch (sortOrder)
-            {
-                case "Name_desc":
-                    veiculosUtilizador = veiculosUtilizador.OrderByDescending(p => p.Marca);
-                    break;
-                case "Preco_asc":
-                    veiculosUtilizador = veiculosUtilizador.OrderBy(p => p.Preco);
-                    break;
-                case "Preco_desc":
-                    veiculosUtilizador = veiculosUtilizador.OrderByDescending(p => p.Preco);
-                    break;
-                default:
-                    veiculosUtilizador = veiculosUtilizador.OrderBy(p => p.Marca);
-                    break;
-            }         
-
-            return View(await veiculosUtilizador.ToListAsync());
-
-            //return View(await _context.Veiculo.Where(c=> c.idEmpresa.Equals(funcionario.EmpresaId)).ToListAsync());
+            return View(await _context.Veiculo.Where(c=> c.idEmpresa.Equals(funcionario.EmpresaId)).ToListAsync());
         }
 
         // GET: Veiculos/Details/5

@@ -1,6 +1,11 @@
 ﻿@model IEnumerable<Tp_Pweb_22_23.Models.Veiculo>
 @using System.Linq
 
+<link href="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.css" rel="stylesheet">
+
+<script src="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.js"></script>
+
+
 @{
     ViewData["Title"] = "Index";
 }
@@ -40,7 +45,7 @@ para fazer filtros dos pesquisados
     </div>
 }*@
 
-
+@*
 <form asp-action="Index" method="get">
     <div class="form-actions no-color">
         <p>
@@ -60,33 +65,34 @@ para fazer filtros dos pesquisados
 <form method="get">
     <input type="checkbox" id="onlyAvailable" name="onlyAvailable" value="true"/> Only show available vehicles
     <button type="submit">Filter</button>
-</form>
+</form>*@
 
-<table class="table table-light table-hover">
+
+<table id="tabelaVeiculo" data-toggle="table" data-search="true" data-search-accent-neutralise="true" data-search-align="left" data-search-highlight="true">
     <thead>
         <tr>
             <th>
                 
             </th>
-            <th>
-                @Html.ActionLink("Name", "Index", new { sortOrder = ViewData["NameSort"] })
+            <th data-sortable="true" data-searchable="true">
+                @Html.DisplayNameFor(model => model.Marca)
             </th>
-            <th>
+            <th data-sortable="false" data-searchable="false">
                 @Html.DisplayNameFor(model => model.Disponivel)
             </th>
-            <th>
+            <th data-sortable="true" data-searchable="true">
                 @Html.DisplayNameFor(model => model.Modelo)
             </th>
-            <th>
+            <th data-sortable="true" data-searchable="false">
                 @Html.DisplayNameFor(model => model.Localizacao)
             </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["PrecoSortParm"]">@Html.DisplayNameFor(model => model.Preco)</a>
+            <th data-sortable="true"  data-searchable="false">
+                @Html.DisplayNameFor(model => model.Preco)
             </th>
-            <th>
+            <th data-sortable="true" data-searchable="false">
                 @Html.DisplayNameFor(model => model.Empresa.Nome)
             </th>
-            <th>
+            <th data-sortable="true" data-searchable="false">
                 @Html.DisplayNameFor(model => model.Categoria.Nome)
             </th>
             <th></th>

@@ -8,27 +8,13 @@
 @{
     ViewData["Title"] = "Index";
 }
-
-
-<style>
-    .search-clear-button::before {
-        content: "";
-        background-image: url("wwroot/img/trash.png");
-        background-position: center;
-        background-repeat: no-repeat;
-        width: 16px;
-        height: 16px;
-        display: inline-block;
-    }
-</style>
-
 <h1>Empresas</h1>
 
 <p>
     <a asp-action="Create">Criar nova empresa</a>
 </p>
 
-<form method="get" asp-controller="Empresas" asp-action="Procura">
+@*<form method="get" asp-controller="Empresas" asp-action="Procura">
     <div class="form-actions no-color">
             <input type="text" name="texto" id="searchText" placeholder="Nome da Empresa"/>
             <button type="submit" class="btn btn-dark">
@@ -36,9 +22,8 @@
             </button>
         </div>
     </form>
-
-<img src="wwroot/img/trash.png" style="display: none;">
-<table id="tabelaEmpresas" data-toggle="table" data-show-search-clear-button="true" data-search="true">
+*@
+<table id="tabelaEmpresas" data-toggle="table" data-search="true" data-search-accent-neutralise="true" data-search-align="left" data-search-highlight="true">
     <thead>
         <tr>
             <th data-sortable="true" data-searchable="true">

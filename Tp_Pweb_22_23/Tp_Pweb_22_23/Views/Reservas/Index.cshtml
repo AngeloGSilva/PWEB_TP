@@ -1,4 +1,8 @@
 ﻿@model IEnumerable<Tp_Pweb_22_23.Models.Reserva>
+<link href="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.css" rel="stylesheet">
+
+<script src="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.js"></script>
+
 
 @{
     ViewData["Title"] = "Index";
@@ -10,28 +14,40 @@
     <a asp-action="Create">Adicionar nova reserva</a>
 </p>*@
 
-<table class="table">
+@*<style>
+    .data-search-text::before {
+        content: "";
+        color: #aaa;
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+</style>*@
+
+<table id="tabelaReservas" data-toggle="table" data-search="true" data-show-footer="true" data-search-accent-neutralise="true" data-search-align="left" data-search-highlight="true">
     <thead>
         <tr>
-            <th>
+            <th >
                 @Html.DisplayNameFor(model => model.Estado)
             </th>
-            <th>
+            <th data-sortable ="true" data-searchable="true">
                 @Html.DisplayNameFor(model => model.DataRecolha)
-            </th>
-            <th>
+            </thd>
+            <th data-sortable="true" data-searchable="true">
                 @Html.DisplayNameFor(model => model.DataEntrega)
             </th>
-            <th>
+            <th data-field="price" data-footer-formatter="priceFormatter">
                 @Html.DisplayNameFor(model => model.Total)
             </th>
-            <th>
+            <th data-sortable="true" data-searchable="true">
                 @Html.DisplayNameFor(model => model.Veiculo.Marca)
             </th>
-            <th>
+            <th data-sortable="true" data-searchable="true">
                 @Html.DisplayNameFor(model => model.Veiculo.Modelo)
             </th>
-            <th>
+            <th data-sortable="true" data-searchable="true">
                 @Html.DisplayNameFor(model => model.Cliente.Email)
             </th>
             <th></th>
@@ -91,3 +107,15 @@
 }
     </tbody>
 </table>
+
+@*nao esta funcionar*@
+<script>
+    function priceFormatter(data) {
+        var field = this.field
+        return '€' + data.map(function (row) {
+            return +row[field].substring(1)
+        }).reduce(function (sum, i) {
+            return sum + i
+        }, 0)
+    }
+</script>
