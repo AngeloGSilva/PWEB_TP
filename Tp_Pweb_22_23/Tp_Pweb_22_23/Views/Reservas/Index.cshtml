@@ -89,7 +89,7 @@
                             @if (item.Estado == ESTADO.Recolher)
                             {
                                 <text>Entregar a Cliente</text>
-                            }else
+                            } else
                             {
                                 <text>Recolher de Cliente</text>
                             }</a>
@@ -97,6 +97,9 @@
                     else if (item.Estado == ESTADO.Pendente && (User.IsInRole("Funcionario") || User.IsInRole("Gestor") || User.IsInRole("Cliente")))
                     {
                         <a asp-action="Delete" asp-route-id="@item.Id">Cancelar Reserva</a>
+                    } else if (item.Estado == ESTADO.Classificar && (User.IsInRole("Cliente"))) 
+                    {
+                        <a asp-action="ClassificarEmpresa" asp-route-id="@item.Id">Classificar Empresa</a>
                     }
                     <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a>
 

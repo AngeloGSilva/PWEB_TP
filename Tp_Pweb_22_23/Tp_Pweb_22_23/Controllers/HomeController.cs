@@ -71,6 +71,7 @@ namespace Tp_Pweb_22_23.Controllers
             //List<Veiculo> veiculosDisponiveis = new List<Veiculo>();
             var searchResultados = new SearchResultadosViewModel();
             searchResultados.VeiculosDisponiveis = new List<Veiculo>();
+            searchResultados.EmpresasVeiculos = new List<Empresa>();
             var numeroDeDias = GetNumeroDeDias((DateTime)search.DataRecolha, (DateTime)search.DataEntrega);
 
             if (search.DataRecolha == null && search.DataEntrega == null)
@@ -96,6 +97,7 @@ namespace Tp_Pweb_22_23.Controllers
                             if (IsValidDate(search.DataRecolha, search.DataEntrega, reserva) && !flag)
                             {
                                 flag = true;
+                                searchResultados.EmpresasVeiculos.Add(await _context.Empresa.Where(e => e.Id == veiculo.idEmpresa).FirstAsync());
                                 searchResultados.VeiculosDisponiveis.Add(veiculo);
                                 searchResultados.Total = numeroDeDias * veiculo.Preco;
                             }
@@ -103,6 +105,8 @@ namespace Tp_Pweb_22_23.Controllers
                     }
                     else
                     {
+                        var empresa = await _context.Empresa.Where(e => e.Id == veiculo.idEmpresa).FirstAsync();
+                        searchResultados.EmpresasVeiculos.Add(empresa);
                         searchResultados.VeiculosDisponiveis.Add(veiculo);
                         searchResultados.Total = numeroDeDias * veiculo.Preco;
                     }

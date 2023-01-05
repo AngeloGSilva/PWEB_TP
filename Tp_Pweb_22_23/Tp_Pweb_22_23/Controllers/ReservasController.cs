@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Tp_Pweb_22_23.Data;
 using Tp_Pweb_22_23.Models;
+using Tp_Pweb_22_23.Models.ViewModels;
 
 namespace Tp_Pweb_22_23.Controllers
 {
@@ -28,6 +30,37 @@ namespace Tp_Pweb_22_23.Controllers
                 .Include(u => u.Empresa)
                 .FirstOrDefault();
             return user;
+        }
+
+
+        public async Task<IActionResult> Classificar(int idEmpresa, int avaliacao) 
+        {
+            var empresa = await _context.Empresa.Where(e=> e.Id == idEmpresa).FirstAsync();
+            empresa.NrClassificacoes = empresa.NrClassificacoes + 1;
+            empresa.SomaClassificacoes = empresa.SomaClassificacoes + avaliacao;
+            empresa.Classificacao = empresa.SomaClassificacoes / empresa.NrClassificacoes;
+            _context.Update(empresa);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> ClassificarEmpresa(int? id) 
+        {
+            var classificaViewModel = new ClassificaEmpresaViewModel();
+            var cliente = GetCurrentUser();
+            if (cliente == null) return NotFound();
+            var reserva = await _context.Reserva.Where(c=> c.Id == id).FirstAsync();
+            var veiculo = await _context.Veiculo.Where(v => v.Id == reserva.VeiculoId).FirstAsync();
+            var empresa = await _context.Empresa.Where(e => e.Id == veiculo.idEmpresa).FirstAsync();
+            if (reserva == null) return NotFound();
+            if (reserva.ClienteId == cliente.Id && reserva.Estado == ESTADO.Concluida)
+            {
+                classificaViewModel.empresa = empresa;
+                classificaViewModel.reserva = reserva;
+                classificaViewModel.cliente= cliente;
+                classificaViewModel.veiculo = veiculo;
+            }
+            return View(classificaViewModel);
         }
 
 

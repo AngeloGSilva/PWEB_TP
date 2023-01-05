@@ -3,7 +3,7 @@
 namespace Tp_Pweb_22_23.Models
 {
     public enum ESTADO{
-        Pendente,Recolher, Entregar, Concluida, Cancelada
+        Pendente,Recolher, Entregar, Concluida, Cancelada, Classificar
     }
 
     public class Reserva

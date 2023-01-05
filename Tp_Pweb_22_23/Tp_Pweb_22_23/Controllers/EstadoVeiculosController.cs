@@ -99,7 +99,7 @@ namespace Tp_Pweb_22_23.Controllers
             {
                 if (reserva.Estado == ESTADO.Entregar)
                 {
-                    reserva.Estado = ESTADO.Concluida;
+                    reserva.Estado = ESTADO.Classificar;
                 } else if (reserva.Estado == ESTADO.Recolher) 
                 {
                     reserva.Estado = ESTADO.Entregar;

@@ -45,7 +45,7 @@
                 @Html.DisplayFor(modelItem => item.Nome)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Classificacao)
+                    @Html.DisplayFor(modelItem => item.Classificacao) (@item.NrClassificacoes.ToString())
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Ativo)
