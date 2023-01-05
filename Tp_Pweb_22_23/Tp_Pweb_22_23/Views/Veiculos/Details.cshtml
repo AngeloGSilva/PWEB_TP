@@ -50,8 +50,16 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Empresa.Nome)
         </dd>
+
         <dt class = "col-sm-2">
-                @Html.DisplayNameFor(model =>  model.Categoria.Nome)
+                @Html.DisplayNameFor(model => model.Empresa.Classificacao)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Empresa.Classificacao)
+        </dd>
+
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model =>  model.Categoria.Nome)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Categoria.Nome)
@@ -66,5 +74,5 @@
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Editar</a> |
-    <a asp-action="Index">Voltar</a>
+    <a asp-action="AllVeiculos">Voltar</a>
 </div>
