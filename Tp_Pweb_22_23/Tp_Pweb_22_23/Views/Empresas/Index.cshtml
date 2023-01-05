@@ -1,24 +1,53 @@
 ﻿@model IEnumerable<Tp_Pweb_22_23.Models.Empresa>
 
+
+
+<link href="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.css" rel="stylesheet">
+
+<script src="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.js"></script>
 @{
     ViewData["Title"] = "Index";
 }
 
+
+<style>
+    .search-clear-button::before {
+        content: "";
+        background-image: url("wwroot/img/trash.png");
+        background-position: center;
+        background-repeat: no-repeat;
+        width: 16px;
+        height: 16px;
+        display: inline-block;
+    }
+</style>
+
 <h1>Empresas</h1>
 
 <p>
-    <a asp-action="Create">Adicionar nova empresa</a>
+    <a asp-action="Create">Criar nova empresa</a>
 </p>
-<table class="table">
+
+<form method="get" asp-controller="Empresas" asp-action="Procura">
+    <div class="form-actions no-color">
+            <input type="text" name="texto" id="searchText" placeholder="Nome da Empresa"/>
+            <button type="submit" class="btn btn-dark">
+                Procurar
+            </button>
+        </div>
+    </form>
+
+<img src="wwroot/img/trash.png" style="display: none;">
+<table id="tabelaEmpresas" data-toggle="table" data-show-search-clear-button="true" data-search="true">
     <thead>
         <tr>
-            <th>
+            <th data-sortable="true" data-searchable="true">
                 @Html.DisplayNameFor(model => model.Nome)
             </th>
-            <th>
+            <th data-sortable="true" data-searchable="false">
                 @Html.DisplayNameFor(model => model.Classificacao)
             </th>
-            <th>
+            <th data-searchable="false">
                 @Html.DisplayNameFor(model => model.Ativo)
             </th>
             <th></th>
@@ -45,3 +74,13 @@
 }
     </tbody>
 </table>
+
+@*<script>
+    $(function () {
+        $('#tabelaEmpresas').change(function () {
+            $('#table').bootstrapTable('refreshOptions', {
+                sortable: $('#sortable').prop('checked')
+            })
+        })
+    })
+</script>*@

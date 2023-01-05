@@ -49,6 +49,26 @@ namespace Tp_Pweb_22_23.Controllers
             return View(empresa);
         }
 
+
+        // GET: Empresas/Procura
+        [HttpGet]
+        public async Task<IActionResult> Procura(string? texto)
+        {
+            if (texto == null)
+            {
+                var empresas = await _context.Empresa
+                    .ToListAsync();
+                return View("Index", empresas);
+            }
+            else
+            {
+                var empresasProcura = await _context.Empresa
+                    .Where(c => c.Nome.ToLower().Contains(texto.ToLower()))
+                    .ToListAsync();
+                return View("Index", empresasProcura);
+            }
+        }
+
         // GET: Empresas/Create
         public IActionResult Create()
         {
