@@ -38,13 +38,9 @@
                 <span asp-validation-for="Preco" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="idEmpresa" class="control-label"></label>
-                <input asp-for="idEmpresa" class="form-control" />
-                <span asp-validation-for="idEmpresa" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="idCategoria" class="control-label"></label>
-                <input asp-for="idCategoria" class="form-control" />
+                <label asp-for="idCategoria" class="control-label">@Html.DisplayNameFor(model => model.Categoria.Nome): </label>
+                <input asp-for="idCategoria" hidden class="form-control" value="@Model.idCategoria" />
+                @Html.DisplayFor(model => model.Categoria.Nome)
                 <span asp-validation-for="idCategoria" class="text-danger"></span>
             </div>
             <div class="form-group">

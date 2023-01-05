@@ -86,11 +86,11 @@
     </div>
 
     <div>
-        <form method="post" asp-action="Search" class="row gx-4 gy-2 align-items-center">
+        <form method="post" asp-action="Search" class="row gx-4 gy-2 align-items-centerneeds-validation" novalidate>
         <div class="col-sm-3">
             <label class="visually" for="specificSizeInputName">Localização</label>
-            <input type="text" name="Localizacao" class="form-control" id="specificSizeInputName" placeholder="Porto">
-        </div>
+                <input type="text" name="Localizacao" class="form-control" id="specificSizeInputName" placeholder="Porto">
+            </div>
         <div class="col-sm-3">
             <label class="visually" for="specificSizeInputName">Data de Recolha</label>
             <input type="date" name="DataRecolha" class="form-control" placeholder="Data de Recolha">

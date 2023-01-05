@@ -172,6 +172,7 @@ namespace Tp_Pweb_22_23.Controllers
         // GET: Veiculos/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            ViewData["CategoriaId"] = new SelectList(_context.Categoria.ToList(), "Id", "Nome");
             if (id == null || _context.Veiculo == null)
             {
                 return NotFound();
@@ -190,18 +191,24 @@ namespace Tp_Pweb_22_23.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Foto,Marca,Disponivel,Modelo,Localizacao,Preco,idEmpresa,idCategoria")] Veiculo veiculo)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Marca,Disponivel,Modelo,Localizacao,Preco,idCategoria")] Veiculo veiculo)
         {
             if (id != veiculo.Id)
             {
                 return NotFound();
             }
 
+            var veiculoAnterior = await _context.Veiculo.Where(c => c.Id == veiculo.Id).FirstAsync();
+            veiculoAnterior.Preco = veiculo.Preco;
+            veiculoAnterior.Localizacao = veiculo.Localizacao;
+            veiculoAnterior.Marca = veiculo.Marca;
+            veiculoAnterior.Disponivel = veiculo.Disponivel;
+            veiculoAnterior.Modelo = veiculo.Modelo;
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(veiculo);
+                    _context.Update(veiculoAnterior);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

@@ -34,6 +34,11 @@ namespace Tp_Pweb_22_23.Controllers
         // GET: Reservas
         public async Task<IActionResult> Index()
         {
+            ViewData["ClienteId"] = new SelectList(_context.Users.ToList(), "Id", "Email");
+            ViewData["VeiculoId"] = new SelectList(_context.Veiculo.ToList(), "Id", "Marca");
+            ViewData["VeiculoId"] = new SelectList(_context.Veiculo.ToList(), "Id", "Modelo");
+
+
             var user = GetCurrentUser();
 
             if (User.IsInRole("Admin"))
@@ -95,6 +100,36 @@ namespace Tp_Pweb_22_23.Controllers
                 if (VeiculoReservaEmpresaId == user.EmpresaId && (User.IsInRole("Gestor") || User.IsInRole("Funcionario")))
                 {
                     reserva.Estado = ESTADO.Recolher;
+                    _context.Update(reserva);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    TempData["Error"] = String.Format("Utilizador sem autoridade para realizar operacao");
+                }
+            }
+            else
+            {
+                TempData["Error"] = String.Format("Reserva nao se encontra pendente");
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> RecusarReserva(int? id)
+        {
+            var user = GetCurrentUser();
+            var reserva = _context.Reserva.Where(c => c.Id == id).FirstOrDefault();
+
+            var VeiculoReservaEmpresaId = (from v in _context.Veiculo
+                                           join r in _context.Reserva on v.Id equals r.VeiculoId
+                                           where r.Id == reserva.Id
+                                           select v.idEmpresa).FirstOrDefault();
+            //query = query.FirstOrDefault();
+            if (reserva.Estado == ESTADO.Pendente)
+            {
+                if (VeiculoReservaEmpresaId == user.EmpresaId && (User.IsInRole("Gestor") || User.IsInRole("Funcionario")))
+                {
+                    reserva.Estado = ESTADO.Cancelada;
                     _context.Update(reserva);
                     await _context.SaveChangesAsync();
                 }

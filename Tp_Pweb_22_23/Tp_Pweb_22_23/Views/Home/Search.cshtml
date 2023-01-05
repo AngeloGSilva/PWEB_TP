@@ -38,8 +38,15 @@
                             <input type="hidden" asp-for="DataRecolha" name="DataRecolha" value="@Model.DataRecolha">
                             <input type="hidden" asp-for="DataEntrega" name="DataEntrega" value="@Model.DataEntrega">
                             <input type="hidden" name="IdVeiculo" value="@item.Id">
-                            <button class="w-50 btn btn-sm btn-outline-secondary" style="text-align: center;" type="submit">Reservar</button>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <button class="w-50 btn btn-sm btn-outline-secondary" style="text-align: center;" type="submit">Reservar</button>
+                            }else{
+                                <button class="w-50 btn btn-sm btn-outline-secondary" title="Faz login para ter acesso a esta função" style="text-align: center;" disabled type="submit">Reservar</button>
+                            }
                         </form>
+
+                        
                 </div>
                     <div class="card-footer w-100" style="display: flex; align-content:center; justify-content: center;">
                         <small class="text-muted" style="text-align: center; font-size: 20px">Total: <b>@Model.Total€</b></small>

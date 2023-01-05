@@ -207,7 +207,10 @@ namespace Tp_Pweb_22_23.Controllers
             if (empresa != null)
             {
                 if(await CheckVeiculosEmpresa(id) == true)
-                    return Problem("Empresa possui veiculos.");
+                {
+                    TempData["Error"] = String.Format("A Empresa '{0}' possui Veiculos por isso não pode ser apagada",empresa.Nome);
+                    return RedirectToAction(nameof(Delete));
+                }
                 await DeleteUsersAsync(id);
                 _context.Empresa.Remove(empresa);
             }
