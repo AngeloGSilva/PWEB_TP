@@ -8,26 +8,22 @@
     ViewData["Title"] = "Index";
 }
 <h1>Veiculos</h1>
-<p>
+@*<p>
     <a asp-action="Create">Adicionar novo veiculo</a>
 </p>
+*@
+<form method="get" asp-action="Create" asp-controller="Veiculos">
+    <button class="btn btn-dark">Adicionar Veiculo</button>
+</form>
 
-<table id="tabelaVeiculo" data-toggle="table" data-search="true" data-search-accent-neutralise="true" data-search-align="left" data-search-highlight="true">
+<table id="tabelaVeiculo" data-toggle="table" data-search="true" data-search-accent-neutralise="true" data-search-highlight="true">
     <thead>
         <tr>
-            <th>
-
-            </th>
+            <th></th>
             <th data-sortable="true" data-searchable="true">
                 @Html.DisplayNameFor(model => model.Marca)
             </th>
-            <th data-sortable="false" data-
-            
-            
-            
-            
-            
-            able="false">
+            <th data-sortable="false" data-searchable="false">
                 @Html.DisplayNameFor(model => model.Disponivel)
             </th>
             <th data-sortable="true" data-searchable="true">

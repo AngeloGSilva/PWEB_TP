@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Security.Claims;
+using System.Security.Principal;
 using Tp_Pweb_22_23.Data;
 using Tp_Pweb_22_23.Models;
 using Tp_Pweb_22_23.Models.ViewModels;
@@ -145,9 +147,9 @@ namespace Tp_Pweb_22_23.Controllers
 
         public async Task<IActionResult> FazReservaAsync([Bind("IdVeiculo,DataRecolha,DataEntrega")] FazReservaViewModel reservaSolicitada)
         {
-            if (!User.Identity.IsAuthenticated) 
+            if (!User.Identity.IsAuthenticated)
             {
-                return RedirectToAction(nameof(Index));
+                return Redirect("/Identity/Account/Register");
             }
 
             var veiculo = await _context.Veiculo.Where(c => c.Id == reservaSolicitada.IdVeiculo).FirstAsync();

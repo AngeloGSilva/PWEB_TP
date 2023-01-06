@@ -80,7 +80,7 @@ namespace Tp_Pweb_22_23.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Classificacao,Ativo")] Empresa empresa)
+        public async Task<IActionResult> Create([Bind("Id,Nome,Ativo")] Empresa empresa)
         {
             if (ModelState.IsValid)
             {

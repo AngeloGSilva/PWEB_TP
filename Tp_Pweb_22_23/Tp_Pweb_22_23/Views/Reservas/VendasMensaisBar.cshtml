@@ -1,0 +1,94 @@
+﻿@model Tp_Pweb_22_23.Models.Empresa
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_layout.cshtml";
+}
+<html>
+<body>
+    <h1>Vendas Mensais por Veiculo</h1>
+
+    <table border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="center">
+                <div id="Grafico" align="center">
+                    <canvas id="chartGraficoVendas" width="500" height="500"></canvas>
+                </div>
+            </td>
+            <td>
+                <div id="dvLegend">
+                </div>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
+
+@section Scripts {
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/excanvas/r3/excanvas.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+
+
+        $(function () {
+            LoadChart();
+            $("#Empresas").on("change", function () {
+                LoadChart();
+            });
+            $("#rblChartType input").on("click", function () {
+                LoadChart();
+            });
+            function LoadChart() {
+                var chartType = parseInt($("#rblChartType input:checked").val());
+                var obj = {};
+                obj.Id = $("#Empresas").val();
+                $.ajax({
+                    type: "POST",
+                    url: "/Vendas/DadosVendasMensaisBar",
+
+                    data: JSON.stringify(obj),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+
+                    success: function (mems) {
+                        $("#chartGraficoVenda").html("");
+                        $("#dvLegend").html("");
+                        let aData = mems;
+
+                        let aLabels = aData[0];
+                        let aDatasets1 = aData[1];
+                        let dataT = {
+                            labels: aLabels,
+                            datasets: [{
+                                label: "Veiculos",
+                                data: aDatasets1,
+                                fill: false,
+                                backgroundColor: ["rgba(54, 162, 235, 0.2)", "rgba(255, 99, 132, 0.2)", "rgba(255, 159, 64, 0.2)",
+                                    "rgba(255, 205, 86, 0.2)", "rgba(75, 192, 192, 0.2)", "rgba(153, 102, 255, 0.2)", "rgba(201, 203, 207, 0.2)"],
+                                borderColor: ["rgb(54, 162, 235)", "rgb(255, 99, 132)", "rgb(255, 159, 64)", "rgb(255, 205, 86)",
+                                    "rgb(75, 192, 192)", "rgb(153, 102, 255)", "rgb(201, 203, 207)"],
+                                borderWidth: 1
+                            }]
+
+                        };
+
+                        const canvas = document.getElementById('chartGraficoVendas')
+                        const ctx = canvas.getContext('2d')
+
+
+                        let myNewChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: dataT,
+                            options: {
+                                responsive: true,
+                                title: { display: true, text: 'Vendas de Veiculos ' },
+                                legend: { position: 'bottom' },
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    </script>
+}
+

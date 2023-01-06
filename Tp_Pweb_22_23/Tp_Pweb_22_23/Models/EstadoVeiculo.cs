@@ -5,6 +5,7 @@ namespace Tp_Pweb_22_23.Models
     public class EstadoVeiculo
     {
         public int Id { get; set; }
+        [Display(Name = "Estado")]
         public ESTADO ESTADO { get; set; }
         public int NumeroKm { get; set; }
         public bool Danos { get; set; }

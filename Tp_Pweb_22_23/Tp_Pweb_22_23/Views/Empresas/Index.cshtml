@@ -10,20 +10,15 @@
 }
 <h1>Empresas</h1>
 
-<p>
+@*<p>
     <a asp-action="Create">Criar nova empresa</a>
-</p>
+</p>*@
 
-@*<form method="get" asp-controller="Empresas" asp-action="Procura">
-    <div class="form-actions no-color">
-            <input type="text" name="texto" id="searchText" placeholder="Nome da Empresa"/>
-            <button type="submit" class="btn btn-dark">
-                Procurar
-            </button>
-        </div>
-    </form>
-*@
-<table id="tabelaEmpresas" data-toggle="table" data-search="true" data-search-accent-neutralise="true" data-search-align="left" data-search-highlight="true">
+<form method="get" asp-action="Create" asp-controller="Empresas">
+    <button class="btn btn-dark">Adicionar Empresa</button>
+</form>
+
+<table id="tabelaEmpresas" data-toggle="table" data-search="true" data-search-accent-neutralise="true" data-search-highlight="true">
     <thead>
         <tr>
             <th data-sortable="true" data-searchable="true">

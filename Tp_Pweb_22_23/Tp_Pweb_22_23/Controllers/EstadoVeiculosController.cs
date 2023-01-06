@@ -34,6 +34,9 @@ namespace Tp_Pweb_22_23.Controllers
         // GET: EstadoVeiculos
         public async Task<IActionResult> Index()
         {
+            //ViewData["Id"] = new SelectList(_context.Categoria.ToList(), "Id", "Nome");
+            ViewData["FuncionarioId"] = new SelectList(_context.Users.ToList(), "Id", "Email");
+
             var funcionario = GetCurrentUser();
             var estados = await _context.EstadoVeiculo.ToListAsync();
             var estadosVeiculosEmpresa = new List<EstadoVeiculo>();
@@ -55,6 +58,7 @@ namespace Tp_Pweb_22_23.Controllers
         // GET: EstadoVeiculos/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            ViewData["FuncionarioId"] = new SelectList(_context.Users.ToList(), "Id", "Email");
             if (id == null || _context.EstadoVeiculo == null)
             {
                 return NotFound();
@@ -67,7 +71,39 @@ namespace Tp_Pweb_22_23.Controllers
             {
                 return NotFound();
             }
+            string coursePath;
 
+            if(estadoVeiculo.ESTADO == ESTADO.Recolher && estadoVeiculo.Danos) 
+            {
+                coursePath = Path.Combine(Directory.GetCurrentDirectory(), ("wwwroot/img/Danos/" + estadoVeiculo.ReservaId.ToString() + "/Recolher"));
+                if (!Directory.Exists(coursePath))
+                    Directory.CreateDirectory(coursePath);
+                //LINK SYNTAX
+                var files = from file in
+                                Directory.EnumerateFiles(coursePath)
+                            select string.Format(
+                                "/img/Danos//{0}/Recolher/{1}",
+                                estadoVeiculo.ReservaId,
+                                Path.GetFileName(file));
+
+                ViewData["Ficheiros"] = files; //lista de strings para a vista
+            }
+                
+            if (estadoVeiculo.ESTADO == ESTADO.Entregar && estadoVeiculo.Danos) 
+            {
+                coursePath = Path.Combine(Directory.GetCurrentDirectory(), ("wwwroot/img/Danos/" + estadoVeiculo.ReservaId.ToString() + "/Entregar"));
+                if (!Directory.Exists(coursePath))
+                    Directory.CreateDirectory(coursePath);
+                //LINK SYNTAX
+                var files = from file in
+                                Directory.EnumerateFiles(coursePath)
+                            select string.Format(
+                                "/img/cursos//{0}/Entregar/{1}",
+                                estadoVeiculo.ReservaId,
+                                Path.GetFileName(file));
+
+                ViewData["Ficheiros"] = files; //lista de strings para a vista
+            }
             return View(estadoVeiculo);
         }
 
@@ -89,7 +125,7 @@ namespace Tp_Pweb_22_23.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("NumeroKm,Danos,Observacoes,FuncionarioId,ReservaId,ESTADO")] EstadoVeiculo estadoVeiculo)
+        public async Task<IActionResult> Create([Bind("NumeroKm,Danos,Observacoes,FuncionarioId,ReservaId,ESTADO")] EstadoVeiculo estadoVeiculo, [FromForm] List<IFormFile> ficheiros)
         {
             var reserva = _context.Reserva.Where(c=> c.Id == estadoVeiculo.ReservaId).FirstOrDefault();
             var funcionario = await _userManager.FindByIdAsync(estadoVeiculo.FuncionarioId);
@@ -99,9 +135,76 @@ namespace Tp_Pweb_22_23.Controllers
             {
                 if (reserva.Estado == ESTADO.Entregar)
                 {
+                    if (estadoVeiculo.Danos) 
+                    {
+                        string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/Danos/");
+                        if (!Directory.Exists(path))
+                            Directory.CreateDirectory(path);
+
+                        // Dir relativo aos ficheiros do curso
+                        path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/Danos/" + reserva.Id.ToString() + "/Entregar");
+                        if (!Directory.Exists(path))
+                            Directory.CreateDirectory(path);
+
+
+
+                        foreach (var formFile in ficheiros)
+                        {
+                            if (formFile.Length > 0)
+                            {
+                                var filePath = Path.Combine(path, Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName));
+                                while (System.IO.File.Exists(filePath))
+                                {
+                                    filePath = Path.Combine(path, Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName));
+                                }
+                                using (var stream = System.IO.File.Create(filePath))
+                                {
+                                    await formFile.CopyToAsync(stream);
+                                }
+                            }
+                        }
+
+
+
+                    }
+
                     reserva.Estado = ESTADO.Classificar;
                 } else if (reserva.Estado == ESTADO.Recolher) 
                 {
+                    if (estadoVeiculo.Danos)
+                    {
+                        string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/Danos/");
+                        if (!Directory.Exists(path))
+                            Directory.CreateDirectory(path);
+
+                        // Dir relativo aos ficheiros do curso
+                        path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/Danos/" + reserva.Id.ToString() + "/Recolher");
+                        if (!Directory.Exists(path))
+                            Directory.CreateDirectory(path);
+
+
+
+                        foreach (var formFile in ficheiros)
+                        {
+                            if (formFile.Length > 0)
+                            {
+                                var filePath = Path.Combine(path, Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName));
+                                while (System.IO.File.Exists(filePath))
+                                {
+                                    filePath = Path.Combine(path, Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName));
+                                }
+                                using (var stream = System.IO.File.Create(filePath))
+                                {
+                                    await formFile.CopyToAsync(stream);
+                                }
+                            }
+                        }
+
+
+
+
+                    }
+
                     reserva.Estado = ESTADO.Entregar;
                 }
                 _context.Update(reserva);

@@ -134,6 +134,19 @@ namespace Tp_Pweb_22_23.Controllers
             return View(categoria);
         }
 
+        public async Task<bool> CheckVeiculosCategorias(int id)
+        {
+            var veiculos = await _context.Veiculo.Where(c => c.idCategoria == id).ToListAsync();
+            foreach (var veiculo in veiculos)
+            {
+                if (veiculo.idCategoria == id)
+                    return true;
+            }
+
+            return false;
+        }
+
+
         // POST: Categorias/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -146,6 +159,11 @@ namespace Tp_Pweb_22_23.Controllers
             var categoria = await _context.Categoria.FindAsync(id);
             if (categoria != null)
             {
+                if (await CheckVeiculosCategorias(id) == true) 
+                {
+                    TempData["Error"] = String.Format("A Categoria '{0}' possui Veiculos por isso não pode ser apagada", categoria.Nome);
+                    return RedirectToAction(nameof(Delete));
+                }
                 _context.Categoria.Remove(categoria);
             }
             

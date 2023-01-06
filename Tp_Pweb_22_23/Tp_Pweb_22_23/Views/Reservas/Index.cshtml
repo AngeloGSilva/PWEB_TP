@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Tp_Pweb_22_23.Models.Reserva>
 <link href="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.css" rel="stylesheet">
-
-<script src="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@*<script src="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.js"></script>*@
 
 
 @{
@@ -26,7 +26,7 @@
     }
 </style>*@
 
-<table id="tabelaReservas" data-toggle="table" data-search="true" data-show-footer="true" data-search-accent-neutralise="true" data-search-align="left" data-search-highlight="true">
+<table id="tabelaReservas" data-toggle="table" data-search="true" data-search-accent-neutralise="true" data-search-highlight="true" data-show-footer="true" data-footer-formatter="footerFormatter">
     <thead>
         <tr>
             <th >
@@ -38,7 +38,7 @@
             <th data-sortable="true" data-searchable="true">
                 @Html.DisplayNameFor(model => model.DataEntrega)
             </th>
-            <th data-field="price" data-footer-formatter="priceFormatter">
+            <th data-field="price" data-footer-formatter="footerFormatter">
                 @Html.DisplayNameFor(model => model.Total)
             </th>
             <th data-sortable="true" data-searchable="true">
@@ -66,7 +66,7 @@
                     @Html.DisplayFor(modelItem => item.DataEntrega, "{0:dd MMMM yyyy}")
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Total) Euros
+                   @Html.DisplayFor(modelItem => item.Total) 
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Veiculo.Marca)
@@ -113,12 +113,11 @@
 
 @*nao esta funcionar*@
 <script>
-    function priceFormatter(data) {
-        var field = this.field
-        return '€' + data.map(function (row) {
-            return +row[field].substring(1)
-        }).reduce(function (sum, i) {
-            return sum + i
-        }, 0)
+    function footerFormatter(data) {
+        let total = 0;
+        $.each(data, function (i, row) {
+            total += +(row.price.substring(1));
+        });
+        return 'Total: $' + total;
     }
 </script>

@@ -132,6 +132,7 @@ namespace Tp_Pweb_22_23.Controllers
             {
                 if (VeiculoReservaEmpresaId == user.EmpresaId && (User.IsInRole("Gestor") || User.IsInRole("Funcionario")))
                 {
+                    //reserva.Veiculo = await _context.Veiculo.Where(v => v.Id == reserva.VeiculoId).FirstAsync();
                     reserva.Estado = ESTADO.Recolher;
                     _context.Update(reserva);
                     await _context.SaveChangesAsync();
@@ -231,6 +232,7 @@ namespace Tp_Pweb_22_23.Controllers
         {
             if (ModelState.IsValid)
             {
+                reserva.Veiculo = await _context.Veiculo.Where(v => v.Id == reserva.VeiculoId).FirstAsync();
                 _context.Add(reserva);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -337,6 +339,55 @@ namespace Tp_Pweb_22_23.Controllers
         private bool ReservaExists(int id)
         {
             return _context.Reserva.Any(e => e.Id == id);
+        }
+
+
+
+
+        //DAshBoard
+
+        public IActionResult VendasMensaisBar()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult DadosVendasMensaisBar()
+        {
+            List<object>? VendasMes = new List<object>();
+
+            DataTable dt = new DataTable();
+            dt.Columns.Add("Vendas", System.Type.GetType("System.String"));
+            dt.Columns.Add("Quantidade", System.Type.GetType("System.Int32"));
+
+            var veiculos = _context.Veiculo
+                .GroupBy(x => new { x.Id, x.Marca })
+                            .Select(x => new
+                            {
+                                x.Key.Id,
+                                x.Key.Marca,
+                                vendasNoMes = _context.Reserva
+                                                    .Where(p => p.VeiculoId == x.Key.Id)}).OrderBy(x => x.Marca).ToList();
+
+            //Percorrendo e extraindo os dados de venda de cada curso na BD para os inserir nas DataRow
+            foreach (var veiculo in veiculos)
+            {
+                DataRow dr = dt.NewRow();
+                dr["Vendas"] = veiculo.Marca;
+                dr["Quantidade"] = veiculo.vendasNoMes;
+                dt.Rows.Add(dr);
+            }
+
+            //Percorrendo e extraindo cada DataColumn para List<Object>
+            foreach (DataColumn dc in dt.Columns)
+            {
+                List<object> x = new List<object>();
+                x = (from DataRow drr in dt.Rows select drr[dc.ColumnName]).ToList();
+                VendasMes.Add(x);
+            }
+
+            //Dados retornados no formato JSON
+            return Json(VendasMes);
         }
     }
 }
