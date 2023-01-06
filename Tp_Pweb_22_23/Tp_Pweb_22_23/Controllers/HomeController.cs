@@ -75,15 +75,15 @@ namespace Tp_Pweb_22_23.Controllers
             searchResultados.EmpresasVeiculos = new List<Empresa>();
             var numeroDeDias = GetNumeroDeDias((DateTime)search.DataRecolha, (DateTime)search.DataEntrega);
 
-            if (search.DataRecolha == null && search.DataEntrega == null)
-            {
-                searchResultados.VeiculosDisponiveis = await _context.Veiculo.Where(c => c.Disponivel == true && c.Localizacao.ToLower() == search.Localizacao.ToLower() && c.idCategoria == search.IdCategoria).ToListAsync();
-                searchResultados.DataEntrega = search.DataEntrega;
-                searchResultados.DataRecolha = search.DataRecolha;
-                return View(searchResultados);
-            }
-            else
-            {
+            //if (search.DataRecolha == null && search.DataEntrega == null)
+            //{
+            //    searchResultados.VeiculosDisponiveis = await _context.Veiculo.Where(c => c.Disponivel == true && c.Localizacao.ToLower() == search.Localizacao.ToLower() && c.idCategoria == search.IdCategoria).ToListAsync();
+            //    searchResultados.DataEntrega = search.DataEntrega;
+            //    searchResultados.DataRecolha = search.DataRecolha;
+            //    return View(searchResultados);
+            //}
+            //else
+            //{
                 var veiculosDisponiveis = await _context.Veiculo.Where(c => c.Disponivel == true && c.Localizacao.ToLower() == search.Localizacao.ToLower() && c.idCategoria == search.IdCategoria).ToListAsync();
                 //IEnumerable<Veiculo> veiculosFinal;
                 //IEnumerable<Reserva> reservas = await _context.Reserva.ToListAsync();
@@ -115,7 +115,7 @@ namespace Tp_Pweb_22_23.Controllers
                     }
                 }
 
-            }
+            //}
             searchResultados.DataEntrega = search.DataEntrega;
             searchResultados.DataRecolha = search.DataRecolha;
             

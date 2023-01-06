@@ -89,15 +89,15 @@
         <form method="post" asp-action="Search" class="row gx-4 gy-2 align-items-centerneeds-validation" novalidate>
         <div class="col-sm-3">
             <label class="visually" for="specificSizeInputName">Localização</label>
-                <input type="text" name="Localizacao" class="form-control" id="specificSizeInputName" placeholder="Porto">
+                <input type="text" name="Localizacao" class="form-control" id="specificSizeInputName" placeholder="Porto" required>
             </div>
         <div class="col-sm-3">
             <label class="visually" for="specificSizeInputName">Data de Recolha</label>
-            <input type="date" name="DataRecolha" class="form-control" placeholder="Data de Recolha">
+            <input type="date" name="DataRecolha" class="form-control" placeholder="Data de Recolha" required>
         </div>
         <div class="col-sm-3">
             <label class="visually" for="specificSizeInputName">Data de Entrega</label>
-            <input type="date" name="DataEntrega" class="form-control" placeholder="Data de Entrega">
+                <input type="date" name="DataEntrega" class="form-control" placeholder="Data de Entrega" required>
         </div>
         <div class="col-sm-3">
                 <label class="control-label"></label>
