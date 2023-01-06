@@ -13,54 +13,55 @@
 </style>
 
 
-@if(Model.VeiculosDisponiveis.Count != 0){
+@if (Model.VeiculosDisponiveis.Count != 0)
+{
     <h1>Os nossos Automóveis</h1>
     <h3>Data de Recolha: @Model.DataRecolha?.ToString("dd MMMM yyyy")</h3>
     <h3>Data de Entrega: @Model.DataEntrega?.ToString("dd MMMM yyyy")</h3>
 
-<div class="row row-cols-1 row-cols-md-3 g-4">
-    @foreach (var veiculo in Model.VeiculosDisponiveis)
-    {
-        @foreach(var empresa in Model.EmpresasVeiculos){
-            @if(empresa.Id == veiculo.idEmpresa){
-        <div class="col">
-            <div class="card h-100 align-items-center">
-                @if (veiculo.Foto == null)
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var veiculo in Model.VeiculosDisponiveis)
+        {
+            @foreach (var empresa in Model.EmpresasVeiculos)
+            {
+                @if (empresa.Id == veiculo.idEmpresa)
                 {
-                    <img id="foto" src="/img/carIcon.png" class="card-img-top" alt="...">
-                }
-                else
-                {
-                    <img id="foto" src="data:image/*;base64,@(Convert.ToBase64String(veiculo.Foto))" class="card-img-top" alt="...">
-                }
-                    <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">Classificacao da Empresa:  @empresa.Classificacao (@empresa.NrClassificacoes)</p>
-                        <form method="post" asp-action="FazReserva">
-                            <input type="hidden" asp-for="DataRecolha" name="DataRecolha" value="@Model.DataRecolha">
-                            <input type="hidden" asp-for="DataEntrega" name="DataEntrega" value="@Model.DataEntrega">
-                            <input type="hidden" name="IdVeiculo" value="@veiculo.Id">
-                            @if (User.Identity.IsAuthenticated)
+                    <div class="col">
+                        <div class="card h-100 align-items-center">
+                            @if (veiculo.Foto == null)
                             {
-                                <button class="w-50 btn btn-sm btn-outline-secondary" style="text-align: center;" type="submit">Reservar</button>
-                            }else{
-                                <button class="w-50 btn btn-sm btn-outline-secondary" title="Faz login para ter acesso a esta função" style="text-align: center;" disabled type="submit">Reservar</button>
+                                <img id="foto" src="/img/carIcon.png" class="card-img-top" alt="...">
                             }
-                        </form>
+                            else
+                            {
+                                <img id="foto" src="data:image/*;base64,@(Convert.ToBase64String(veiculo.Foto))" class="card-img-top" alt="...">
+                            }
+                            <div class="card-body">
+                                <h5 class="card-title">Card title</h5>
+                                <p class="card-text">Classificacao da Empresa:  @empresa.Classificacao (@empresa.NrClassificacoes)</p>
+                                @*                                @using (Html.BeginForm("FazReserva", "Home", FormMethod.Post)){
+                *@
+                                <form method="post" asp-action="FazReserva">
+                                    <input type="hidden" asp-for="DataRecolha" name="DataRecolha" value="@Model.DataRecolha" />
+                                    <input type="hidden" asp-for="DataEntrega" name="DataEntrega" value="@Model.DataEntrega" />
+                                    <input type="hidden" name="IdVeiculo" value="@veiculo.Id">
+                                    <button class="w-50 btn btn-sm btn-outline-secondary" style="text-align: center;" type="submit">Reservar</button>
+                                </form>
+                                @*    }*@
 
-                        
-                </div>
-                    <div class="card-footer w-100" style="display: flex; align-content:center; justify-content: center;">
-                        <small class="text-muted" style="text-align: center; font-size: 20px">Total: <b>@Model.Total€</b></small>
-                </div>
-            </div>
-        </div>
+                            </div>
+                            <div class="card-footer w-100" style="display: flex; align-content:center; justify-content: center;">
+                                <small class="text-muted" style="text-align: center; font-size: 20px">Total: <b>@Model.Total€</b></small>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
         }
-    }
-   }
-</div>
+    </div>
 
-}else
+}
+else
 {
     <h2>Sem Veiculos Disponiveis para as seguintes datas</h2>
     <h3>Data de Recolha: @Model.DataRecolha?.ToString("dd MMMM yyyy")</h3>

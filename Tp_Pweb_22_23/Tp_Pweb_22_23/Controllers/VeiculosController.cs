@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing;
 using Tp_Pweb_22_23.Data;
 using Tp_Pweb_22_23.Models;
 using Tp_Pweb_22_23.Models.ViewModels;
@@ -115,7 +116,8 @@ namespace Tp_Pweb_22_23.Controllers
 
             //return View(await veiculosUtilizador.ToListAsync());
             var funcionario = GetCurrentUser();
-            return View(await _context.Veiculo.Where(c=> c.idEmpresa.Equals(funcionario.EmpresaId)).ToListAsync());
+            var veiculos =  await _context.Veiculo.Where(c => c.idEmpresa == funcionario.EmpresaId).ToListAsync();
+            return View(veiculos);
         }
 
         // GET: Veiculos/Details/5

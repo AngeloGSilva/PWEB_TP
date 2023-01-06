@@ -2,77 +2,21 @@
 @using System.Linq
 
 <link href="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.css" rel="stylesheet">
-
 <script src="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.js"></script>
-
 
 @{
     ViewData["Title"] = "Index";
 }
-
 <h1>Veiculos</h1>
-
 <p>
     <a asp-action="Create">Adicionar novo veiculo</a>
 </p>
-
-@*<style>
-
-    th {
-        cursor: pointer;
-        color: black;
-    }
-
-    th:hover {
-        color: blue;
-    }
-</style>*@
-
-
-
-
-@*
-para fazer filtros dos pesquisados    
-@using (Html.BeginForm("Search", "Cursos", FormMethod.Post))
-{
-    <div class="form-inline d-flex">
-        <input type="text" name="TextoAPesquisar" id="TextoAPesquisar"
-           placeholder="Pesquisar um curso" class="form-control form-control-sm" />
-        <button type="submit" class="btn btn-default ms-2 me-2">
-            <svg bootstrap-icon="Search" class="text-warning" width="24" height="24"
-             aria-label="Search"></svg>
-        </button>
-    </div>
-}*@
-
-@*
-<form asp-action="Index" method="get">
-    <div class="form-actions no-color">
-        <p>
-            <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]"/>
-            <button class="btn btn-secondary" type="submit">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                </svg>
-            </button>
-
-            
-            <a asp-action="Index">Lista Completa</a>
-        </p>
-    </div>
-</form>
-
-<form method="get">
-    <input type="checkbox" id="onlyAvailable" name="onlyAvailable" value="true"/> Only show available vehicles
-    <button type="submit">Filter</button>
-</form>*@
-
 
 <table id="tabelaVeiculo" data-toggle="table" data-search="true" data-search-accent-neutralise="true" data-search-align="left" data-search-highlight="true">
     <thead>
         <tr>
             <th>
-                
+
             </th>
             <th data-sortable="true" data-searchable="true">
                 @Html.DisplayNameFor(model => model.Marca)
@@ -86,7 +30,7 @@ para fazer filtros dos pesquisados
             <th data-sortable="true" data-searchable="false">
                 @Html.DisplayNameFor(model => model.Localizacao)
             </th>
-            <th data-sortable="true"  data-searchable="false">
+            <th data-sortable="true" data-searchable="false">
                 @Html.DisplayNameFor(model => model.Preco)
             </th>
             <th data-sortable="true" data-searchable="false">
@@ -99,46 +43,52 @@ para fazer filtros dos pesquisados
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+@*        @if (Model.Count() == 0)
         {
-            <tr>
-                <td>
-                    @if (item.Foto == null)
-                    {
-                        <img id="Foto" class="img-thumbnail" style="height:40px;width:auto" src="~/img/carIcon.png" />
-                    }
-                    else
-                    {
-                        <img id="MyAvatar" class="img-thumbnail" style="height:40px;width:auto" src="data:image/*;base64,@(Convert.ToBase64String(item.Foto))" />
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Marca)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Disponivel)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Modelo)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Localizacao)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Preco)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Empresa.Nome)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Categoria.Nome)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
-                </td>
-            </tr>
+            <p>Nao tem veiculos</p>
+
         }
+        else*@
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @if (item.Foto == null)
+                        {
+                            <img id="Foto" class="img-thumbnail" style="height:40px;width:auto" src="~/img/carIcon.png" />
+                        }
+                        else
+                        {
+                            <img id="MyAvatar" class="img-thumbnail" style="height:40px;width:auto" src="data:image/*;base64,@(Convert.ToBase64String(item.Foto))" />
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Marca)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Disponivel)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Modelo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Localizacao)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Preco)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Empresa.Nome)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Categoria.Nome)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+                    </td>
+                </tr>
+            }
     </tbody>
 </table>

@@ -69,6 +69,7 @@ namespace Tp_Pweb_22_23.Controllers
         public async Task<IActionResult> SearchAsync([Bind("Localizacao,DataRecolha,DataEntrega,IdCategoria")] SearchViewModel search)
         {
             //List<Veiculo> veiculosDisponiveis = new List<Veiculo>();
+            var empresa = new Empresa();
             var searchResultados = new SearchResultadosViewModel();
             searchResultados.VeiculosDisponiveis = new List<Veiculo>();
             searchResultados.EmpresasVeiculos = new List<Empresa>();
@@ -105,8 +106,10 @@ namespace Tp_Pweb_22_23.Controllers
                     }
                     else
                     {
-                        var empresa = await _context.Empresa.Where(e => e.Id == veiculo.idEmpresa).FirstAsync();
-                        searchResultados.EmpresasVeiculos.Add(empresa);
+                        empresa = await _context.Empresa.Where(e => e.Id == veiculo.idEmpresa).FirstAsync();
+                        if (!searchResultados.EmpresasVeiculos.Contains(empresa)) {
+                            searchResultados.EmpresasVeiculos.Add(empresa);
+                        }
                         searchResultados.VeiculosDisponiveis.Add(veiculo);
                         searchResultados.Total = numeroDeDias * veiculo.Preco;
                     }
@@ -142,6 +145,11 @@ namespace Tp_Pweb_22_23.Controllers
 
         public async Task<IActionResult> FazReservaAsync([Bind("IdVeiculo,DataRecolha,DataEntrega")] FazReservaViewModel reservaSolicitada)
         {
+            if (!User.Identity.IsAuthenticated) 
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             var veiculo = await _context.Veiculo.Where(c => c.Id == reservaSolicitada.IdVeiculo).FirstAsync();
             var numeroDays = GetNumeroDeDias(reservaSolicitada.DataRecolha, reservaSolicitada.DataEntrega);
 
