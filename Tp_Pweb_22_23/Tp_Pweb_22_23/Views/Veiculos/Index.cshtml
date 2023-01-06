@@ -15,6 +15,9 @@
 <form method="get" asp-action="Create" asp-controller="Veiculos">
     <button class="btn btn-dark">Adicionar Veiculo</button>
 </form>
+<a asp-action="Index" asp-route-activo="true">Activos</a>
+<a asp-action="Index" asp-route-activo="false">Inactivos</a>
+<a asp-action="Index">Todos</a>
 
 <table id="tabelaVeiculo" data-toggle="table" data-search="true" data-search-accent-neutralise="true" data-search-highlight="true">
     <thead>

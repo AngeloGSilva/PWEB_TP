@@ -152,7 +152,7 @@ namespace Tp_Pweb_22_23.Controllers
                 return Redirect("/Identity/Account/Register");
             }
 
-            var veiculo = await _context.Veiculo.Where(c => c.Id == reservaSolicitada.IdVeiculo).FirstAsync();
+            var veiculo = await _context.Veiculo.Include("Categoria").Include("Empresa").Where(c => c.Id == reservaSolicitada.IdVeiculo).FirstAsync();
             var numeroDays = GetNumeroDeDias(reservaSolicitada.DataRecolha, reservaSolicitada.DataEntrega);
 
             var reserva = new Reserva
@@ -162,7 +162,8 @@ namespace Tp_Pweb_22_23.Controllers
                 VeiculoId = reservaSolicitada.IdVeiculo,
                 Total = veiculo.Preco*numeroDays,
                 Veiculo = veiculo,
-                ClienteId = GetCurrentUser().Id
+                ClienteId = GetCurrentUser().Id,
+                Cliente = GetCurrentUser()
             };
             _context.Add(reserva);
             await _context.SaveChangesAsync();

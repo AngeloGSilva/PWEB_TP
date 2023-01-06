@@ -45,40 +45,24 @@ namespace Tp_Pweb_22_23.Controllers
 
             return View("Index");
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool? activo)
         {
             var UtilizadorAtual = await _userManager.GetUserAsync(User);
             List<UserRolesViewModel> userRolesManagerViewModel = new List<UserRolesViewModel>();
 
             if (User.IsInRole("Admin"))
             {
-                var users = await _userManager.Users.ToListAsync();
+                var users = new List<ApplicationUser>();
+                if (activo == false)
+                {
+                    users = await _userManager.Users.Where(u => u.IsActive == false).ToListAsync();
+                }
+                else if (activo == true)
+                    users = await _userManager.Users.Where(u => u.IsActive == true).ToListAsync();
+                else
+                    users = await _userManager.Users.ToListAsync();
                 foreach (var user in users)
                 {
-                    if (user.Id != UtilizadorAtual.Id)
-                    {
-                        UserRolesViewModel userRolesViewModel = new UserRolesViewModel();
-
-                    userRolesViewModel.Avatar = user.Avatar;
-                    userRolesViewModel.UserId = user.Id;
-                    userRolesViewModel.UserName = user.UserName;
-                    userRolesViewModel.PrimeiroNome = user.PrimeiroNome;
-                    userRolesViewModel.UltimoNome = user.UltimoNome;
-                    userRolesViewModel.Activo = user.IsActive;
-                    userRolesViewModel.Roles = await _userManager.GetRolesAsync(user);
-
-                    userRolesManagerViewModel.Add(userRolesViewModel);
-                }
-                }
-            }
-            else
-            {
-                var users = await _userManager.Users.ToListAsync();
-                users = await _context.Users.Where(c => c.EmpresaId == UtilizadorAtual.EmpresaId && c.EmpresaId != null).ToListAsync();
-
-                foreach (var user in users)
-                {
-                    if (user.Id != UtilizadorAtual.Id) {
                         UserRolesViewModel userRolesViewModel = new UserRolesViewModel();
 
                         userRolesViewModel.Avatar = user.Avatar;
@@ -90,7 +74,33 @@ namespace Tp_Pweb_22_23.Controllers
                         userRolesViewModel.Roles = await _userManager.GetRolesAsync(user);
 
                         userRolesManagerViewModel.Add(userRolesViewModel);
-                    }
+                }
+            }
+            else
+            {
+                var users = new List<ApplicationUser>();
+                if (activo == false)
+                {
+                    users = await _context.Users.Where(c => c.EmpresaId == UtilizadorAtual.EmpresaId && c.EmpresaId != null && c.IsActive == false).ToListAsync();
+                }
+                else if (activo == true)
+                    users = await _context.Users.Where(c => c.EmpresaId == UtilizadorAtual.EmpresaId && c.EmpresaId != null && c.IsActive == true).ToListAsync();
+                else
+                    users = await _context.Users.Where(c => c.EmpresaId == UtilizadorAtual.EmpresaId && c.EmpresaId != null).ToListAsync();
+
+                foreach (var user in users)
+                {
+                        UserRolesViewModel userRolesViewModel = new UserRolesViewModel();
+
+                        userRolesViewModel.Avatar = user.Avatar;
+                        userRolesViewModel.UserId = user.Id;
+                        userRolesViewModel.UserName = user.UserName;
+                        userRolesViewModel.PrimeiroNome = user.PrimeiroNome;
+                        userRolesViewModel.UltimoNome = user.UltimoNome;
+                        userRolesViewModel.Activo = user.IsActive;
+                        userRolesViewModel.Roles = await _userManager.GetRolesAsync(user);
+
+                        userRolesManagerViewModel.Add(userRolesViewModel);
                 }
             }
             return View(userRolesManagerViewModel);
@@ -204,7 +214,7 @@ namespace Tp_Pweb_22_23.Controllers
                     "Profile for employee '{0} {1}' was created. " +
                     "He/she can now login with Username '{2}' and Password '{3}'.",
                     user.PrimeiroNome, user.UltimoNome, user.UserName, criarUtilizador.Password);
-                
+
             }
             return RedirectToAction(nameof(Index));
         }
@@ -222,14 +232,19 @@ namespace Tp_Pweb_22_23.Controllers
             {
                 return NotFound();
             }
-            var model = new EditFuncionarioViewModel
-            {
-                //Id = user.Id,
-                PrimeiroNome = user.PrimeiroNome,
-                UltimoNome = user.UltimoNome,
-                Activo = user.IsActive
-            };
-            return View(model);
+            var userAtual = GetCurrentUser();
+            if (userAtual.Id != id) {
+                var model = new EditFuncionarioViewModel
+                {
+                    //Id = user.Id,
+                    PrimeiroNome = user.PrimeiroNome,
+                    UltimoNome = user.UltimoNome,
+                    Activo = user.IsActive
+                };
+                return View(model);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // POST: UserManager/Edit/5

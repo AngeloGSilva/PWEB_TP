@@ -75,48 +75,18 @@ namespace Tp_Pweb_22_23.Controllers
 
 
         // GET: Veiculos
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool? activo)
         {
             ViewData["CategoriaId"] = new SelectList(_context.Categoria.ToList(), "Id", "Nome");
             ViewData["EmpresaId"] = new SelectList(_context.Empresa.ToList(), "Id", "Nome");
-            //ViewData["MarcaSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Name_desc" : "";
-            //ViewData["PrecoSortParm"] = sortOrder== "Preco_asc" ? "Preco_desc" : "Preco_asc";
-            ////ViewData["DisponivelSortParm"] = sortOrder == "Disponivel" ? "Indisponivel" : "Disponivel";
-            //ViewData["CurrentFilter"] = searchString;
-            //var funcionario = GetCurrentUser();
-
-            //var veiculosUtilizador = _context.Veiculo.Where(c => c.idEmpresa.Equals(funcionario.EmpresaId)).AsQueryable();
-            //if (onlyAvailable)
-            //{
-            //    veiculosUtilizador = veiculosUtilizador.Where(v => v.Disponivel);
-            //}
-
-            //if (!String.IsNullOrEmpty(searchString))
-            //{
-            //    veiculosUtilizador = veiculosUtilizador.Where(s => s.Marca.Contains(searchString)
-            //                           || s.Modelo.Contains(searchString));
-            //}
-
-
-            //switch (sortOrder)
-            //{
-            //    case "Name_desc":
-            //        veiculosUtilizador = veiculosUtilizador.OrderByDescending(p => p.Marca);
-            //        break;
-            //    case "Preco_asc":
-            //        veiculosUtilizador = veiculosUtilizador.OrderBy(p => p.Preco);
-            //        break;
-            //    case "Preco_desc":
-            //        veiculosUtilizador = veiculosUtilizador.OrderByDescending(p => p.Preco);
-            //        break;
-            //    default:
-            //        veiculosUtilizador = veiculosUtilizador.OrderBy(p => p.Marca);
-            //        break;
-            //}         
-
-            //return View(await veiculosUtilizador.ToListAsync());
             var funcionario = GetCurrentUser();
-            var veiculos =  await _context.Veiculo.Where(c => c.idEmpresa == funcionario.EmpresaId).ToListAsync();
+            var veiculos = new List<Veiculo>();
+            if (activo == false) {
+                veiculos = await _context.Veiculo.Where(c => c.idEmpresa == funcionario.EmpresaId && c.Disponivel == false).ToListAsync();
+            }else if(activo == true)
+                veiculos = await _context.Veiculo.Where(c => c.idEmpresa == funcionario.EmpresaId && c.Disponivel == true).ToListAsync();
+            else
+                veiculos = await _context.Veiculo.Where(c => c.idEmpresa == funcionario.EmpresaId).ToListAsync();
             return View(veiculos);
         }
 

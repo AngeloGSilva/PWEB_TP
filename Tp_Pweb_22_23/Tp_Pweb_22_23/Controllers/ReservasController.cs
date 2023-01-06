@@ -35,7 +35,7 @@ namespace Tp_Pweb_22_23.Controllers
 
         public async Task<IActionResult> Classificar(int idEmpresa, int avaliacao) 
         {
-            var empresa = await _context.Empresa.Where(e=> e.Id == idEmpresa).FirstAsync();
+            var empresa = await _context.Empresa.Include("Veiculos").Include("Funcionarios").Where(e=> e.Id == idEmpresa).FirstAsync();
             empresa.NrClassificacoes = empresa.NrClassificacoes + 1;
             empresa.SomaClassificacoes = empresa.SomaClassificacoes + avaliacao;
             empresa.Classificacao = empresa.SomaClassificacoes / empresa.NrClassificacoes;
@@ -49,11 +49,11 @@ namespace Tp_Pweb_22_23.Controllers
             var classificaViewModel = new ClassificaEmpresaViewModel();
             var cliente = GetCurrentUser();
             if (cliente == null) return NotFound();
-            var reserva = await _context.Reserva.Where(c=> c.Id == id).FirstAsync();
-            var veiculo = await _context.Veiculo.Where(v => v.Id == reserva.VeiculoId).FirstAsync();
-            var empresa = await _context.Empresa.Where(e => e.Id == veiculo.idEmpresa).FirstAsync();
+            var reserva = await _context.Reserva.Include("Veiculo").Include("estadoVeiculos").Include("Cliente").Where(c=> c.Id == id).FirstAsync();
+            var veiculo = await _context.Veiculo.Include("Empresa").Include("Categoria").Where(v => v.Id == reserva.VeiculoId).FirstAsync();
+            var empresa = await _context.Empresa.Include("Veiculos").Include("Funcionarios").Where(e => e.Id == veiculo.idEmpresa).FirstAsync();
             if (reserva == null) return NotFound();
-            if (reserva.ClienteId == cliente.Id && reserva.Estado == ESTADO.Concluida)
+            if (reserva.ClienteId == cliente.Id && reserva.Estado == ESTADO.Classificar)
             {
                 classificaViewModel.empresa = empresa;
                 classificaViewModel.reserva = reserva;
@@ -74,14 +74,10 @@ namespace Tp_Pweb_22_23.Controllers
 
             var user = GetCurrentUser();
 
-            if (User.IsInRole("Admin"))
+            if (User.IsInRole("Gestor") || User.IsInRole("Funcionario"))
             {
-                return View(await _context.Reserva.Include(r => r.Cliente).Include(r => r.Veiculo).ToListAsync());
-            }
-            else if (User.IsInRole("Gestor") || User.IsInRole("Funcionario"))
-            {
-                var reservasComVeiculosDaMesmaEmpresa = from r in _context.Reserva
-                                                        join v in _context.Veiculo on r.VeiculoId equals v.Id
+                var reservasComVeiculosDaMesmaEmpresa = from r in _context.Reserva.Include("Veiculo")
+                                                        join v in _context.Veiculo.Include("Empresa") on r.VeiculoId equals v.Id
                                                         where v.idEmpresa == user.EmpresaId && v.Disponivel == true
                                                         select r;
 
@@ -113,6 +109,8 @@ namespace Tp_Pweb_22_23.Controllers
             {
                 return NotFound();
             }
+            var veiculoReserva = await _context.Veiculo.Include("Empresa").Where(v => v.Id == reserva.VeiculoId).FirstAsync();
+            reserva.Veiculo = veiculoReserva;
 
             return View(reserva);
         }
@@ -121,8 +119,8 @@ namespace Tp_Pweb_22_23.Controllers
         public async Task<IActionResult> ConfirmReserva(int? id)
         {
             var user = GetCurrentUser();
-            var reserva = _context.Reserva.Where(c => c.Id == id).FirstOrDefault();
-
+            var reserva = _context.Reserva.Include("Cliente").Include("Veiculo").Where(c => c.Id == id).FirstOrDefault();
+            var veiculo2 = reserva.Veiculo;
             var VeiculoReservaEmpresaId = (from v in _context.Veiculo
                                            join r in _context.Reserva on v.Id equals r.VeiculoId
                                            where r.Id == reserva.Id

@@ -36,15 +36,18 @@ namespace Tp_Pweb_22_23.Controllers
         {
             //ViewData["Id"] = new SelectList(_context.Categoria.ToList(), "Id", "Nome");
             ViewData["FuncionarioId"] = new SelectList(_context.Users.ToList(), "Id", "Email");
-
+            //ViewData["VeiculoId"] = new SelectList(_context.Users.ToList(), "Id", "Marca");
             var funcionario = GetCurrentUser();
-            var estados = await _context.EstadoVeiculo.ToListAsync();
+            var estados = await _context.EstadoVeiculo.Include("Reserva").ToListAsync();
             var estadosVeiculosEmpresa = new List<EstadoVeiculo>();
             foreach (var estado in estados) 
             {
+                var veiculo = await _context.Veiculo.Include("Empresa").Include("Categoria").Where(v => v.Id == estado.Reserva.VeiculoId).FirstAsync();
+                //var idEmpresa = estado.Reserva.Veiculo.idEmpresa;
                 var idEmpresa = _context.Reserva.Where(r => r.Id == estado.ReservaId && r.VeiculoId != null)
                         .Select(r => r.Veiculo.idEmpresa)
                         .FirstOrDefault();
+                estado.Reserva.Veiculo = veiculo;
 
                 if (funcionario.EmpresaId == idEmpresa) 
                 {
@@ -110,7 +113,7 @@ namespace Tp_Pweb_22_23.Controllers
         // GET: EstadoVeiculos/Create
         public IActionResult Create(string FuncionarioId, int ReservaId, ESTADO EstadoReserva)
         {
-            var reserva = _context.Reserva.Where(c => c.Id == ReservaId).FirstOrDefault();
+            var reserva = _context.Reserva.Include("Cliente").Include("Veiculo").Where(c => c.Id == ReservaId).FirstOrDefault();
             var funcionario = _context.Users.Where(c => c.Id == FuncionarioId).FirstOrDefault();
 
             ViewData["ReservaId"] = ReservaId;
@@ -127,7 +130,7 @@ namespace Tp_Pweb_22_23.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("NumeroKm,Danos,Observacoes,FuncionarioId,ReservaId,ESTADO")] EstadoVeiculo estadoVeiculo, [FromForm] List<IFormFile> ficheiros)
         {
-            var reserva = _context.Reserva.Where(c=> c.Id == estadoVeiculo.ReservaId).FirstOrDefault();
+            var reserva = _context.Reserva.Include("Veiculo").Include("Cliente").Include("estadoVeiculos").Where(c=> c.Id == estadoVeiculo.ReservaId).FirstOrDefault();
             var funcionario = await _userManager.FindByIdAsync(estadoVeiculo.FuncionarioId);
             estadoVeiculo.Reserva = reserva;
             estadoVeiculo.Funcionario = funcionario;
@@ -182,8 +185,6 @@ namespace Tp_Pweb_22_23.Controllers
                         if (!Directory.Exists(path))
                             Directory.CreateDirectory(path);
 
-
-
                         foreach (var formFile in ficheiros)
                         {
                             if (formFile.Length > 0)
@@ -207,8 +208,9 @@ namespace Tp_Pweb_22_23.Controllers
 
                     reserva.Estado = ESTADO.Entregar;
                 }
-                _context.Update(reserva);
                 _context.Add(estadoVeiculo);
+                reserva.estadoVeiculos.Add(estadoVeiculo);
+                _context.Update(reserva);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
