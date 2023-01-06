@@ -38,7 +38,7 @@ namespace Tp_Pweb_22_23.Controllers
             ViewData["FuncionarioId"] = new SelectList(_context.Users.ToList(), "Id", "Email");
             //ViewData["VeiculoId"] = new SelectList(_context.Users.ToList(), "Id", "Marca");
             var funcionario = GetCurrentUser();
-            var estados = await _context.EstadoVeiculo.Include("Reserva").ToListAsync();
+            var estados = await _context.EstadoVeiculo.Include("Reserva.Veiculo").ToListAsync();
             var estadosVeiculosEmpresa = new List<EstadoVeiculo>();
             foreach (var estado in estados) 
             {

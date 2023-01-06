@@ -58,13 +58,19 @@
             @Html.DisplayFor(model => model.Veiculo.Modelo)
         </dd>
         <dt class = "col-sm-2">
-            Cliente @Html.DisplayNameFor(model => model.Cliente.Email)
+            @Html.DisplayNameFor(model => model.Cliente.Email)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Cliente.Email)
         </dd>
         <dt class="col-sm-2">
-            Empresa @Html.DisplayNameFor(model => model.Veiculo.Empresa.Classificacao)
+            @Html.DisplayNameFor(model => model.Veiculo.Empresa.Nome)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Veiculo.Empresa.Nome)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Veiculo.Empresa.Classificacao)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Veiculo.Empresa.Classificacao) (@Html.DisplayFor(model => model.Veiculo.Empresa.NrClassificacoes))

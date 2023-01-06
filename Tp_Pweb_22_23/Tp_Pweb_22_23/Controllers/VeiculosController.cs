@@ -191,11 +191,24 @@ namespace Tp_Pweb_22_23.Controllers
             }
 
             var veiculoAnterior = await _context.Veiculo.Where(c => c.Id == veiculo.Id).FirstAsync();
-            veiculoAnterior.Preco = veiculo.Preco;
-            veiculoAnterior.Localizacao = veiculo.Localizacao;
-            veiculoAnterior.Marca = veiculo.Marca;
-            veiculoAnterior.Disponivel = veiculo.Disponivel;
-            veiculoAnterior.Modelo = veiculo.Modelo;
+
+            if (veiculoAnterior != veiculo) 
+            {
+                if(await CheckReservasVeiculoPendentes(veiculo.Id)) 
+                {
+                    TempData["Error"] = String.Format("O Veiculo '{0}' '{1}' não pode ser editado enquanto estiver incluido em reservas por concluir.", veiculo.Marca, veiculo.Modelo);
+                    //veiculoAnterior.Disponivel = true;
+                    //RedirectToAction(nameof(Edit));
+                }
+                else {
+                    veiculoAnterior.Preco = veiculo.Preco;
+                    veiculoAnterior.Disponivel = veiculo.Disponivel;
+                    veiculoAnterior.Localizacao = veiculo.Localizacao;
+                    veiculoAnterior.Marca = veiculo.Marca;
+                    veiculoAnterior.Modelo = veiculo.Modelo;
+                }
+
+            }
             if (ModelState.IsValid)
             {
                 try
@@ -237,6 +250,30 @@ namespace Tp_Pweb_22_23.Controllers
             return View(veiculo);
         }
 
+
+        public async Task<bool> CheckReservasVeiculoPendentes(int id)
+        {
+            var reservas = await _context.Reserva.Where(r => r.VeiculoId == id).ToListAsync();
+            foreach (var reserva in reservas)
+            {
+                if (reserva.Estado != ESTADO.Concluida)
+                    return true;
+            }
+            return false;
+        }
+
+
+        public async Task<bool> CheckReservasVeiculo(int id) 
+        {
+            var reservas = await _context.Reserva.Where(r => r.VeiculoId == id).ToListAsync();
+            foreach (var reserva in reservas)
+            {
+                if (reserva.VeiculoId == id)
+                    return true;
+            }
+            return false;
+        }
+
         // POST: Veiculos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -251,7 +288,13 @@ namespace Tp_Pweb_22_23.Controllers
             {
                 _context.Veiculo.Remove(veiculo);
             }
-            
+
+            if(await CheckReservasVeiculo(id) == true)
+                {
+                    TempData["Error"] = String.Format("O Veiculo '{0}' '{1}' não pode ser apagado enquanto estiver incluido em reservas por concluir.", veiculo.Marca, veiculo.Modelo);
+                    return RedirectToAction(nameof(Delete));
+                }
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

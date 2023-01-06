@@ -52,9 +52,9 @@ namespace Tp_Pweb_22_23.Controllers
             {
                 return true;
             }
-            else if (Entrega <= reserva.DataEntrega && Recolha <= reserva.DataEntrega)
+            else if (Entrega < reserva.DataEntrega && Recolha < reserva.DataEntrega)
             {
-                return false;
+                return true;
             }
             //verificar esta condicap
             else if (Recolha < reserva.DataEntrega)

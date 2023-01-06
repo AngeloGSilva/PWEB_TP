@@ -78,15 +78,17 @@ namespace Tp_Pweb_22_23.Controllers
             {
                 var reservasComVeiculosDaMesmaEmpresa = from r in _context.Reserva.Include("Veiculo")
                                                         join v in _context.Veiculo.Include("Empresa") on r.VeiculoId equals v.Id
-                                                        where v.idEmpresa == user.EmpresaId && v.Disponivel == true
+                                                        where v.idEmpresa == user.EmpresaId
                                                         select r;
 
                 return View(reservasComVeiculosDaMesmaEmpresa);
             }
             if (User.IsInRole("Cliente"))
             {
+                var reservasCliente = await _context.Reserva.Include("Veiculo").Include("Veiculo.Empresa").Where(r => r.ClienteId == user.Id).ToListAsync();
+                //var reservasCliente = await _context.Reserva.Include("Veiculo").Where(r => r.Estado == ESTADO.Concluida || _context.Veiculo.Include("Empresa").Any(v => v.Id == r.VeiculoId && _context.Empresa.Include("Veiculos").Any(e => e.Id == v.idEmpresa && e.Ativo == true))).ToListAsync();
                 //_context.Veiculo.Where(v => _context.Empresa.Any(e => e.Id == v.idEmpresa && e.Ativo == true) && v.Disponivel == true);
-                return View(await _context.Reserva.Where(r => r.Estado == ESTADO.Concluida || _context.Veiculo.Any(v => v.Id == r.VeiculoId && _context.Empresa.Any(e => e.Id == v.idEmpresa && e.Ativo == true))).ToListAsync());
+                return View(reservasCliente);
             }
             return (NotFound());
             //var applicationDbContext = _context.Reserva.Include(r => r.Cliente).Include(r => r.Veiculo);
