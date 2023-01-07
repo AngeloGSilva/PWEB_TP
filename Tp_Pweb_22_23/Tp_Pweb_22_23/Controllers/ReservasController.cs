@@ -36,6 +36,9 @@ namespace Tp_Pweb_22_23.Controllers
         public async Task<IActionResult> Classificar(int idEmpresa, int avaliacao) 
         {
             var empresa = await _context.Empresa.Include("Veiculos").Include("Funcionarios").Where(e=> e.Id == idEmpresa).FirstAsync();
+            var reserva = await _context.Reserva.Include("Veiculo").Include("estadoVeiculos").Include("Cliente").Where(c => c.Veiculo.idEmpresa == idEmpresa).FirstAsync();
+            reserva.Estado = ESTADO.Concluida;
+            _context.Update(reserva);
             empresa.NrClassificacoes = empresa.NrClassificacoes + 1;
             empresa.SomaClassificacoes = empresa.SomaClassificacoes + avaliacao;
             empresa.Classificacao = empresa.SomaClassificacoes / empresa.NrClassificacoes;
