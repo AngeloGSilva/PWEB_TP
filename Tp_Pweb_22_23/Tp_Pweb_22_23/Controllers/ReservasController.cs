@@ -114,11 +114,34 @@ namespace Tp_Pweb_22_23.Controllers
             if (reserva == null)
             {
                 return NotFound();
-            }
-            var veiculoReserva = await _context.Veiculo.Include("Empresa").Where(v => v.Id == reserva.VeiculoId).FirstAsync();
-            reserva.Veiculo = veiculoReserva;
+            } else if (User.IsInRole("Cliente"))
+            {
+                if (GetCurrentUser().Id != reserva.ClienteId)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    var veiculoReserva = await _context.Veiculo.Include("Empresa").Where(v => v.Id == reserva.VeiculoId).FirstAsync();
+                    reserva.Veiculo = veiculoReserva;
 
-            return View(reserva);
+                    return View(reserva);
+                }
+            } else if (User.IsInRole("Funcionario,Gestor")) 
+            {
+                if (GetCurrentUser().EmpresaId != reserva.Veiculo.idEmpresa)
+                {
+                    return NotFound();
+                }
+                else 
+                {
+                    var veiculoReserva = await _context.Veiculo.Include("Empresa").Where(v => v.Id == reserva.VeiculoId).FirstAsync();
+                    reserva.Veiculo = veiculoReserva;
+
+                    return View(reserva);
+                }
+            }
+            return NotFound();
         }
 
 
@@ -319,7 +342,7 @@ namespace Tp_Pweb_22_23.Controllers
                 return NotFound();
             }
             var user = GetCurrentUser();
-            if (reserva.ClienteId != user.Id) 
+            if (reserva.ClienteId != user.Id || reserva.Estado != ESTADO.Pendente) 
             {
                 return NotFound();
             }

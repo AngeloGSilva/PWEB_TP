@@ -180,6 +180,11 @@ namespace Tp_Pweb_22_23.Controllers
             {
                 return NotFound();
             }
+
+            if (veiculo.idEmpresa != GetCurrentUser().EmpresaId)
+            {
+                return NotFound();
+            }
             return View(veiculo);
         }
 
@@ -250,6 +255,10 @@ namespace Tp_Pweb_22_23.Controllers
             var veiculo = await _context.Veiculo
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (veiculo == null)
+            {
+                return NotFound();
+            }
+            if (veiculo.idEmpresa != GetCurrentUser().EmpresaId) 
             {
                 return NotFound();
             }

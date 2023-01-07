@@ -129,6 +129,16 @@ namespace Tp_Pweb_22_23.Controllers
                 return NotFound();
             }
 
+            if (User.IsInRole("Admin")) 
+            {
+                return View(user);
+            }
+
+            if (GetCurrentUser().EmpresaId != user.EmpresaId) 
+            {
+                return NotFound();
+            }
+
             return View(user);
         }
 

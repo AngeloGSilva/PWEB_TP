@@ -72,12 +72,19 @@ namespace Tp_Pweb_22_23.Controllers
             }
 
             var estadoVeiculo = await _context.EstadoVeiculo
-                .Include(e => e.Reserva)
+                .Include(e => e.Reserva).Include("Funcionario")
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (estadoVeiculo == null)
             {
                 return NotFound();
             }
+
+            if (GetCurrentUser().EmpresaId != estadoVeiculo.Funcionario.EmpresaId) 
+            {
+                return NotFound();
+            }
+
+
             string coursePath;
 
             if (estadoVeiculo.ESTADO == ESTADO.Recolher && estadoVeiculo.Danos)
