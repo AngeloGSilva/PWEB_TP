@@ -88,8 +88,6 @@ namespace Tp_Pweb_22_23.Controllers
 
         public async Task<IActionResult> SearchAsync([Bind("Localizacao,DataRecolha,DataEntrega,IdCategoria")] SearchViewModel search, string? ordem)
         {
-            if ((!User.Identity.IsAuthenticated || User.IsInRole("Cliente")))
-            {
                 if (search.DataRecolha < search.DataEntrega)
                 {
                     var empresa = new Empresa();
@@ -150,8 +148,8 @@ namespace Tp_Pweb_22_23.Controllers
   
                 }
                 else
-                    TempData["Erro"] = String.Format("Datas nao permitidas. ");
-            }
+                    TempData["Erro"] = String.Format("Datas nao permitidas.");
+            
             return View(nameof(Index));
         }
 
@@ -180,7 +178,12 @@ namespace Tp_Pweb_22_23.Controllers
         {
             if (!User.Identity.IsAuthenticated)
             {
+                TempData["Erro"] = String.Format("Crie uma conta para poder Reservar!");
                 return Redirect("/Identity/Account/Register");
+            } else if (User.IsInRole("Gestor")|| User.IsInRole("Funcionario")) 
+            {
+                TempData["Erro"] = String.Format("Contas associadas a empresas não podem fazer reservas!");
+                return View(nameof(Index));
             }
 
             var veiculo = await _context.Veiculo.Include("Categoria").Include("Empresa").Where(c => c.Id == reservaSolicitada.IdVeiculo).FirstAsync();

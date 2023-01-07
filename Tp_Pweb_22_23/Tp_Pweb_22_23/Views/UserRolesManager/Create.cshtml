@@ -6,6 +6,7 @@
 <h1>Criar perfil</h1>
 
 <h4>Funcionário</h4>
+<p class="alert alert-warning text-danger">É aconselhado apos a criacão do perfil o Funcionario Colocar uma foto!</p>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -36,14 +37,12 @@
                 <label asp-for="Role" class="control-label"></label>
                 <select asp-for="Role" class="form-control" asp-items="ViewBag.Roles"></select>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Criar" class="btn btn-primary" />
+            <div class="form-group mt-1">
+                <input type="submit" value="Criar" class="btn btn-success" />
+                <a class="btn btn-dark" role="button" asp-action="Index">Voltar</a>
             </div>
         </form>
     </div>
-</div>
-<div>
-    <a class="btn btn-dark" role="button" asp-action="Index">Voltar</a>
 </div>
 @section Scripts {
     @{

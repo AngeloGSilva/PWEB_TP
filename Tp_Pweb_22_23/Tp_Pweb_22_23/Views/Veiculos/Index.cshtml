@@ -15,9 +15,9 @@
 <form method="get" asp-action="Create" asp-controller="Veiculos">
     <button class="btn btn-dark">Adicionar Veiculo</button>
 </form>
-<a class="btn btn-secondary mt-3 mb-0" role="button" asp-action="Index" asp-route-activo="true">Activos</a>
-<a class="btn btn-secondary mt-3 mb-0" role="button" asp-action="Index" asp-route-activo="false">Inactivos</a>
-<a class="btn btn-secondary mt-3 mb-0" role="button" asp-action="Index">Todos</a>
+<a class="btn btn-sm btn-outline-success mt-3 mb-0" role="button" asp-action="Index" asp-route-activo="true">Activos</a>
+<a class="btn btn-sm btn-outline-secondary mt-3 mb-0" role="button" asp-action="Index" asp-route-activo="false">Inactivos</a>
+<a class="btn btn-sm btn-outline-primary mt-3 mb-0" role="button" asp-action="Index">Todos</a>
 
 <table id="tabelaVeiculo" data-toggle="table" data-search="true" data-search-accent-neutralise="true" data-search-highlight="true">
     <thead>
@@ -89,9 +89,9 @@
                     @Html.DisplayFor(modelItem => item.Categoria.Nome)
                 </td>
                 <td>
-                    <a class="btn btn-secondary" role="button" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
-                    <a class="btn btn-secondary" role="button" asp-action="Details" asp-route-id="@item.Id">Detalhes</a>
-                    <a class="btn btn-secondary" role="button" asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+                    <a class="btn btn-sm mt-1 btn-secondary" role="button" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                    <a class="btn btn-sm btn-sm mt-1 btn-secondary" role="button" asp-action="Details" asp-route-id="@item.Id">Detalhes</a>
+                    <a class="btn btn-sm btn-sm mt-1 btn-danger" role="button" asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
                 </td>
             </tr>
         }

@@ -127,7 +127,7 @@ namespace Tp_Pweb_22_23.Controllers
 
                     return View(reserva);
                 }
-            } else if (User.IsInRole("Funcionario,Gestor")) 
+            } else if (User.IsInRole("Funcionario") || User.IsInRole("Gestor")) 
             {
                 if (GetCurrentUser().EmpresaId != reserva.Veiculo.idEmpresa)
                 {

@@ -14,9 +14,9 @@
         <button class="btn btn-dark">Adicionar Funcionario</button>
     </form>
 }
-<a class="btn btn-secondary mt-3 mb-0 role="button" asp-action="Index" asp-route-activo="true">Activos</a>
-<a class="btn btn-secondary mt-3 mb-0 role="button" asp-action="Index" asp-route-activo="false">Inativos</a>
-<a class="btn btn-secondary mt-3 mb-0 role="button" asp-action="Index">Todos</a>
+<a class="btn btn-sm btn-outline-success mt-3 mb-0 role="button" asp-action="Index" asp-route-activo="true">Activos</a>
+<a class="btn btn-sm btn-outline-secondary mt-3 mb-0 role="button" asp-action="Index" asp-route-activo="false">Inativos</a>
+<a class="btn btn-sm btn-outline-primary mt-3 mb-0 role="button" asp-action="Index">Todos</a>
 
 <table data-toggle="table" data-search="true" data-search-accent-neutralise="true" data-search-highlight="true">
     <thead>
@@ -63,8 +63,8 @@
                     @Html.DisplayFor(modelItem => item.Activo)
                 </td>
                 <td>
-                    <a class="btn btn-secondary" role="button" asp-action="Edit" asp-route-id="@item.UserId">Editar</a>
-                    <a class="btn btn-secondary" role="button" asp-action="Details" asp-route-id="@item.UserId">Detalhes</a>
+                    <a class="btn btn-sm btn-sm mt-1 btn-secondary" role="button" asp-action="Edit" asp-route-id="@item.UserId">Editar</a>
+                    <a class="btn btn-sm btn-sm mt-1 btn-secondary" role="button" asp-action="Details" asp-route-id="@item.UserId">Detalhes</a>
                 </td>
             </tr>
         }

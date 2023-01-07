@@ -8,7 +8,7 @@
 
 <h1>Reservas</h1>
 
-<table id="tabelaReservas" data-toggle="table" data-search="true" data-search-accent-neutralise="true" data-search-highlight="true" data-show-footer="true" data-footer-formatter="footerFormatter">
+<table id="tabelaReservas" data-toggle="table" data-search="true" data-search-accent-neutralise="true" data-search-highlight="true">
     <thead>
         <tr>
             <th>
@@ -20,7 +20,7 @@
             <th data-sortable="true" data-searchable="true">
                     @Html.DisplayNameFor(model => model.DataEntrega)
             </th>
-            <th data-field="price" data-footer-formatter="footerFormatter">
+            <th data-sortable="true" data-searchable="true">
                     @Html.DisplayNameFor(model => model.Total)
             </th>
             <th>
@@ -99,8 +99,8 @@
         }
     </tbody>
 </table>
-
-@*nao esta funcionar*@
+@*
+nao esta funcionar
 <script>
     function footerFormatter(data) {
         let total = 0;
@@ -110,3 +110,4 @@
         return 'Total: $' + total;
     }
 </script>
+*@
