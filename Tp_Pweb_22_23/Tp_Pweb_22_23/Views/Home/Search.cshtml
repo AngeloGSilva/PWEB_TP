@@ -23,7 +23,8 @@
 
     <div class="container text-center">
         <div class="row row-cols-auto">
-            <h5>Preco:</h5>
+            <h7>Ordenar por preço</h7>
+
             <form method="post" asp-action="Search" asp-controller="Home" class="col">
                 <div>
                     <input type="hidden" name="Localizacao" class="form-control" value="@Model.VeiculosDisponiveis[0].Localizacao">
@@ -31,7 +32,7 @@
                     <input type="hidden" name="DataEntrega" class="form-control" value="@Model.DataEntrega">
                     <input type="hidden" name="IdCategoria" class="form-control" value="@Model.VeiculosDisponiveis[0].idCategoria">
                     <input type="hidden" name="ordem" class="form-control" value="asc">
-                    <button type="submit" class="btn btn-outline-secondary btn-sm">Crescente</button>
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Ascendente</button>
                 </div>
             </form>
 
@@ -48,6 +49,7 @@
         </div>
     </div>
 
+         <br></br>
 
     <div class="row row-cols-1 row-cols-md-3 g-4">
         @foreach (var veiculo in Model.VeiculosDisponiveis)
