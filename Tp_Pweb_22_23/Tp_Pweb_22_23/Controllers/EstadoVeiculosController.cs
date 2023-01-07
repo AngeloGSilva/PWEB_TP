@@ -80,36 +80,27 @@ namespace Tp_Pweb_22_23.Controllers
             }
             string coursePath;
 
-            if(estadoVeiculo.ESTADO == ESTADO.Recolher && estadoVeiculo.Danos) 
+            if (estadoVeiculo.ESTADO == ESTADO.Recolher && estadoVeiculo.Danos)
             {
-                coursePath = Path.Combine(Directory.GetCurrentDirectory(), ("wwwroot/img/Danos/" + estadoVeiculo.ReservaId.ToString() + "/Recolher"));
-                if (!Directory.Exists(coursePath))
-                    Directory.CreateDirectory(coursePath);
-                //LINK SYNTAX
-                var files = from file in
-                                Directory.EnumerateFiles(coursePath)
-                            select string.Format(
-                                "/img/Danos//{0}/Recolher/{1}",
-                                estadoVeiculo.ReservaId,
-                                Path.GetFileName(file));
-
-                ViewData["Ficheiros"] = files; //lista de strings para a vista
+                try
+                {
+                    string CoursePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img\\Danos\\" + estadoVeiculo.ReservaId.ToString() + "\\Recolher");
+                    var files = from file in Directory.EnumerateFiles(CoursePath) select string.Format("\\img\\Danos\\{0}\\Recolher\\{1}", estadoVeiculo.ReservaId, Path.GetFileName(file));
+                    ViewData["NFich"] = files.Count();
+                    ViewData["Ficheiros"] = files;
+                }
+                catch (Exception ex){ }
             }
-                
-            if (estadoVeiculo.ESTADO == ESTADO.Entregar && estadoVeiculo.Danos) 
+            if (estadoVeiculo.ESTADO == ESTADO.Entregar && estadoVeiculo.Danos)
             {
-                coursePath = Path.Combine(Directory.GetCurrentDirectory(), ("wwwroot/img/Danos/" + estadoVeiculo.ReservaId.ToString() + "/Entregar"));
-                if (!Directory.Exists(coursePath))
-                    Directory.CreateDirectory(coursePath);
-                //LINK SYNTAX
-                var files = from file in
-                                Directory.EnumerateFiles(coursePath)
-                            select string.Format(
-                                "/img/cursos//{0}/Entregar/{1}",
-                                estadoVeiculo.ReservaId,
-                                Path.GetFileName(file));
-
-                ViewData["Ficheiros"] = files; //lista de strings para a vista
+                try
+                {
+                    string CoursePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img\\Danos\\" + estadoVeiculo.ReservaId.ToString() + "\\Entregar");
+                    var files = from file in Directory.EnumerateFiles(CoursePath) select string.Format("\\img\\Danos\\{0}\\Entregar\\{1}", estadoVeiculo.ReservaId, Path.GetFileName(file));
+                    ViewData["NFich"] = files.Count();
+                    ViewData["Ficheiros"] = files;
+                }
+                catch (Exception ex){}
             }
             return View(estadoVeiculo);
         }
@@ -136,7 +127,7 @@ namespace Tp_Pweb_22_23.Controllers
         [Authorize(Roles = "Gestor,Funcionario")]
         public async Task<IActionResult> Create([Bind("NumeroKm,Danos,Observacoes,FuncionarioId,ReservaId,ESTADO")] EstadoVeiculo estadoVeiculo, [FromForm] List<IFormFile> ficheiros)
         {
-            var reserva = _context.Reserva.Include("Veiculo").Include("Cliente").Include("estadoVeiculos").Where(c=> c.Id == estadoVeiculo.ReservaId).FirstOrDefault();
+            var reserva = _context.Reserva.Include("Veiculo").Include("Cliente").Include("estadoVeiculos").Where(c => c.Id == estadoVeiculo.ReservaId).FirstOrDefault();
             var funcionario = await _userManager.FindByIdAsync(estadoVeiculo.FuncionarioId);
             estadoVeiculo.Reserva = reserva;
             estadoVeiculo.Funcionario = funcionario;
@@ -144,7 +135,7 @@ namespace Tp_Pweb_22_23.Controllers
             {
                 if (reserva.Estado == ESTADO.Entregar)
                 {
-                    if (estadoVeiculo.Danos) 
+                    if (estadoVeiculo.Danos)
                     {
                         string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/Danos/");
                         if (!Directory.Exists(path))
@@ -178,7 +169,8 @@ namespace Tp_Pweb_22_23.Controllers
                     }
 
                     reserva.Estado = ESTADO.Classificar;
-                } else if (reserva.Estado == ESTADO.Recolher) 
+                }
+                else if (reserva.Estado == ESTADO.Recolher)
                 {
                     if (estadoVeiculo.Danos)
                     {
@@ -206,12 +198,7 @@ namespace Tp_Pweb_22_23.Controllers
                                 }
                             }
                         }
-
-
-
-
                     }
-
                     reserva.Estado = ESTADO.Entregar;
                 }
                 _context.Add(estadoVeiculo);
@@ -312,7 +299,7 @@ namespace Tp_Pweb_22_23.Controllers
         //    {
         //        _context.EstadoVeiculo.Remove(estadoVeiculo);
         //    }
-            
+
         //    await _context.SaveChangesAsync();
         //    return RedirectToAction(nameof(Index));
         //}

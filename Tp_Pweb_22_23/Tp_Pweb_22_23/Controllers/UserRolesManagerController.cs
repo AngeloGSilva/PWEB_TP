@@ -122,7 +122,7 @@ namespace Tp_Pweb_22_23.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users
+            var user = await _context.Users.Include("Empresa")
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (user == null)
             {
