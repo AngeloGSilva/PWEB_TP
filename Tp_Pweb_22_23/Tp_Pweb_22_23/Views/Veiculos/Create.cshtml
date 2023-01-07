@@ -14,7 +14,7 @@
                 <img id="MyFotoDisplay"
                      class="img-thumbnail"
                      style="max-width:150px ; max-height:150px"
-                     src="~/img/defaultcar.jpg">
+                     src="~/img/carIcon.png">
             </div>
             <div>
                 <label asp-for="Foto">Adicione uma imagem do veiculo</label>
@@ -52,14 +52,14 @@
                 <select asp-for="idCategoria" class="form-control" asp-items="@(ViewData["CategoriaId"] as SelectList)"></select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Adicionar" class="btn btn-primary" />
+                <input type="submit" value="Adicionar" class="btn btn-primary mt-1" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a class="btn btn-dark" role="button" asp-action="Index">Voltar</a>
+    <a class="btn btn-dark mt-1" role="button" asp-action="Index">Voltar</a>
 </div>
 
 @section Scripts {

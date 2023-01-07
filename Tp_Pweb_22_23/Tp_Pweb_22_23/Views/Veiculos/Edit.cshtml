@@ -27,6 +27,12 @@
                 <input asp-for="Modelo" class="form-control" />
                 <span asp-validation-for="Modelo" class="text-danger"></span>
             </div>
+            @*<br />
+            <h6>@Html.DisplayNameFor(model => model.Categoria.Nome):
+                <br />
+                @Html.DisplayFor(model => model.Categoria.Nome)
+            </h6>*@
+
             <div class="form-group">
                 <label asp-for="Localizacao" class="control-label"></label>
                 <input asp-for="Localizacao" class="form-control" />
@@ -38,13 +44,13 @@
                 <span asp-validation-for="Preco" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="idCategoria" class="control-label">@Html.DisplayNameFor(model => model.Categoria.Nome): </label>
+                <label hidden asp-for="idCategoria" class="control-label"></label>
                 <input asp-for="idCategoria" hidden class="form-control" value="@Model.idCategoria" />
-                @Html.DisplayFor(model => model.Categoria.Nome)
+                
                 <span asp-validation-for="idCategoria" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-dark" />
+                <input type="submit" value="Guardar" class="btn btn-dark mb-1 mt-1" />
             </div>
         </form>
     </div>
