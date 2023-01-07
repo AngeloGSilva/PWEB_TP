@@ -14,23 +14,23 @@
             <th>
                 @Html.DisplayNameFor(model => model.Estado)
             </th>
-            <th data-sortable ="true" data-searchable="true">
-                @Html.DisplayNameFor(model => model.DataRecolha)
-            </thd>
             <th data-sortable="true" data-searchable="true">
-                @Html.DisplayNameFor(model => model.DataEntrega)
+                @Html.DisplayNameFor(model => model.DataRecolha)
+                </thd>
+            <th data-sortable="true" data-searchable="true">
+                    @Html.DisplayNameFor(model => model.DataEntrega)
             </th>
             <th data-field="price" data-footer-formatter="footerFormatter">
-                @Html.DisplayNameFor(model => model.Total)
+                    @Html.DisplayNameFor(model => model.Total)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Veiculo.Empresa.Nome)
+                    @Html.DisplayNameFor(model => model.Veiculo.Empresa.Nome)
             </th>
             <th data-sortable="true" data-searchable="true">
-                @Html.DisplayNameFor(model => model.Veiculo.Marca)
+                    @Html.DisplayNameFor(model => model.Veiculo.Marca)
             </th>
             <th data-sortable="true" data-searchable="true">
-                @Html.DisplayNameFor(model => model.Veiculo.Modelo)
+                    @Html.DisplayNameFor(model => model.Veiculo.Modelo)
             </th>
             <th data-sortable="true" data-searchable="true">
                 Cliente @Html.DisplayNameFor(model => model.Cliente.Email)
@@ -39,60 +39,64 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Estado)
-            </td>
-            <td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Estado)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.DataRecolha, "{0:dd MMMM yyyy}")
-            </td>
-            <td>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.DataEntrega, "{0:dd MMMM yyyy}")
-            </td>
-            <td>
-                   @Html.DisplayFor(modelItem => item.Total) 
-            </td>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Total)
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Veiculo.Empresa.Nome)
                 </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Veiculo.Marca)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Veiculo.Modelo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cliente.Email)
-            </td>
-            <td>
-              @if (item.Estado == ESTADO.Pendente && (User.IsInRole("Funcionario") || User.IsInRole("Gestor")))
+                <td>
+                    @Html.DisplayFor(modelItem => item.Veiculo.Marca)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Veiculo.Modelo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cliente.Email)
+                </td>
+                <td>
+                    @if (item.Estado == ESTADO.Pendente && (User.IsInRole("Funcionario") || User.IsInRole("Gestor")))
                     {
-                        <a asp-action="ConfirmReserva" asp-route-id="@item.Id">Confirmar</a>
-                        <a asp-action="RecusarReserva" asp-route-id="@item.Id">Recusar</a>
+                        <a class="btn btn-outline-success btn-sm mt-1" role="button" asp-action="ConfirmReserva" asp-route-id="@item.Id">Confirmar</a>
+                        <a class="btn btn-outline-danger btn-sm mt-1" role="button" asp-action="RecusarReserva" asp-route-id="@item.Id">Recusar</a>
                     }
                     else if ((item.Estado == ESTADO.Recolher || item.Estado == ESTADO.Entregar) && (User.IsInRole("Funcionario") || User.IsInRole("Gestor")))
                     {
-                        <a asp-action="TratarVeiculoReserva" asp-route-id="@item.Id">
+                        <a class="btn btn-outline-info btn-sm mt-1" role="button" asp-action="TratarVeiculoReserva" asp-route-id="@item.Id">
                             @if (item.Estado == ESTADO.Recolher)
                             {
                                 <text>Entregar a Cliente</text>
-                            } else
+                            }
+                            else
                             {
                                 <text>Recolher de Cliente</text>
-                            }</a>
+                            }
+                        </a>
                     }
                     else if (item.Estado == ESTADO.Pendente && (User.IsInRole("Funcionario") || User.IsInRole("Gestor") || User.IsInRole("Cliente")))
                     {
-                        <a asp-action="Delete" asp-route-id="@item.Id">Cancelar Reserva</a>
-                    } else if (item.Estado == ESTADO.Classificar && (User.IsInRole("Cliente"))) 
-                    {
-                        <a asp-action="ClassificarEmpresa" asp-route-id="@item.Id">Classificar Empresa</a>
+                        <a class="btn btn-outline-danger btn-sm mt-1" role="button" asp-action="Delete" asp-route-id="@item.Id">Cancelar Reserva</a>
                     }
-                    <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a>
-            </td>
-        </tr>
-}
+                    else if (item.Estado == ESTADO.Classificar && (User.IsInRole("Cliente")))
+                    {
+                        <a class="btn btn-secondary btn-sm mt-1" role="button" asp-action="ClassificarEmpresa" asp-route-id="@item.Id">Classificar Empresa</a>
+                    }
+                    <a class="btn btn-secondary btn-sm mt-1" role="button" asp-action="Details" asp-route-id="@item.Id">Detalhes</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 

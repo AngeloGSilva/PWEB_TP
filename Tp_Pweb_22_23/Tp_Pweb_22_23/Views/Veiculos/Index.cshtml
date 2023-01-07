@@ -15,9 +15,9 @@
 <form method="get" asp-action="Create" asp-controller="Veiculos">
     <button class="btn btn-dark">Adicionar Veiculo</button>
 </form>
-<a asp-action="Index" asp-route-activo="true">Activos</a>
-<a asp-action="Index" asp-route-activo="false">Inactivos</a>
-<a asp-action="Index">Todos</a>
+<a class="btn btn-secondary mt-3 mb-0" role="button" asp-action="Index" asp-route-activo="true">Activos</a>
+<a class="btn btn-secondary mt-3 mb-0" role="button" asp-action="Index" asp-route-activo="false">Inactivos</a>
+<a class="btn btn-secondary mt-3 mb-0" role="button" asp-action="Index">Todos</a>
 
 <table id="tabelaVeiculo" data-toggle="table" data-search="true" data-search-accent-neutralise="true" data-search-highlight="true">
     <thead>
@@ -48,52 +48,52 @@
         </tr>
     </thead>
     <tbody>
-@*        @if (Model.Count() == 0)
+        @*        @if (Model.Count() == 0)
         {
-            <p>Nao tem veiculos</p>
+        <p>Nao tem veiculos</p>
 
         }
         else*@
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @if (item.Foto == null)
-                        {
-                            <img id="Foto" class="img-thumbnail" style="height:40px;width:auto" src="~/img/carIcon.png" />
-                        }
-                        else
-                        {
-                            <img id="MyAvatar" class="img-thumbnail" style="height:40px;width:auto" src="data:image/*;base64,@(Convert.ToBase64String(item.Foto))" />
-                        }
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Marca)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Disponivel)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Modelo)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Localizacao)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Preco)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Empresa.Nome)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Categoria.Nome)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
-                    </td>
-                </tr>
-            }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @if (item.Foto == null)
+                    {
+                        <img id="Foto" class="img-thumbnail" style="height:40px;width:auto" src="~/img/carIcon.png" />
+                    }
+                    else
+                    {
+                        <img id="MyAvatar" class="img-thumbnail" style="height:40px;width:auto" src="data:image/*;base64,@(Convert.ToBase64String(item.Foto))" />
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Marca)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Disponivel)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Modelo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Localizacao)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Preco)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Empresa.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Categoria.Nome)
+                </td>
+                <td>
+                    <a class="btn btn-secondary" role="button" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                    <a class="btn btn-secondary" role="button" asp-action="Details" asp-route-id="@item.Id">Detalhes</a>
+                    <a class="btn btn-secondary" role="button" asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

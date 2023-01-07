@@ -25,6 +25,14 @@ namespace Tp_Pweb_22_23.Controllers
             _context = context;
         }
 
+
+        public async Task<IActionResult> ordenarVeiculosPreco([Bind("Localizacao,DataRecolha,DataEntrega,IdCategoria")] SearchViewModel search, string ordem)
+        {
+
+            return View(ordem);
+        }
+
+
         public IEnumerable<Reserva> getReservasVeiculo(Veiculo veiculo)
         {
             List<Reserva> reservasDoVeiculo = new List<Reserva>();
@@ -78,7 +86,7 @@ namespace Tp_Pweb_22_23.Controllers
         }
 
 
-        public async Task<IActionResult> SearchAsync([Bind("Localizacao,DataRecolha,DataEntrega,IdCategoria")] SearchViewModel search)
+        public async Task<IActionResult> SearchAsync([Bind("Localizacao,DataRecolha,DataEntrega,IdCategoria")] SearchViewModel search, string? ordem)
         {
             if ((!User.Identity.IsAuthenticated || User.IsInRole("Cliente")))
             {
@@ -105,7 +113,7 @@ namespace Tp_Pweb_22_23.Controllers
                                     flag = true;
                                     searchResultados.EmpresasVeiculos.Add(await _context.Empresa.Where(e => e.Id == veiculo.idEmpresa).FirstAsync());
                                     searchResultados.VeiculosDisponiveis.Add(veiculo);
-                                    searchResultados.Total = numeroDeDias * veiculo.Preco;
+                                    searchResultados.TotalDias = numeroDeDias;
                                 }
                             }
                         }
@@ -117,14 +125,29 @@ namespace Tp_Pweb_22_23.Controllers
                                 searchResultados.EmpresasVeiculos.Add(empresa);
                             }
                             searchResultados.VeiculosDisponiveis.Add(veiculo);
-                            searchResultados.Total = numeroDeDias * veiculo.Preco;
+                            searchResultados.TotalDias = numeroDeDias;
                         }
                     }
 
                     //}
                     searchResultados.DataEntrega = search.DataEntrega;
                     searchResultados.DataRecolha = search.DataRecolha;
-                    return View(searchResultados);
+                    if (ordem == null) 
+                    {
+                        return View(searchResultados);
+                    }
+                    else if (ordem.Equals("asc"))
+                    {
+                        var list = searchResultados.VeiculosDisponiveis.OrderBy(x => x.Preco).ToList();
+                        searchResultados.VeiculosDisponiveis = list;
+                        return View(searchResultados);
+                    } else if (ordem.Equals("desc")) 
+                    {
+                        var list = searchResultados.VeiculosDisponiveis.OrderByDescending(x => x.Preco).ToList();
+                        searchResultados.VeiculosDisponiveis = list;
+                        return View(searchResultados);
+                    }
+  
                 }
                 else
                     TempData["Erro"] = String.Format("Datas nao permitidas. ");

@@ -34,32 +34,33 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Reserva.Veiculo.Marca)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumeroKm)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Danos)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Observacoes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Funcionario.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ESTADO)
-            </td>
-            <td>
-               @* <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |*@
-                <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a>
-                @*<a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>*@
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Reserva.Veiculo.Marca)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumeroKm)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Danos)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Observacoes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Funcionario.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ESTADO)
+                </td>
+                <td>
+                    @* <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |*@
+                    <a class="btn btn-secondary" role="button" asp-action="Details" asp-route-id="@item.Id">Detalhes</a>
+                    @*<a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>*@
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
