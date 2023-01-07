@@ -45,6 +45,7 @@ namespace Tp_Pweb_22_23.Controllers
 
             return View("Index");
         }
+        [Authorize(Roles = "Gestor,Admin")]
         public async Task<IActionResult> Index(bool? activo)
         {
             var UtilizadorAtual = await _userManager.GetUserAsync(User);
@@ -55,16 +56,18 @@ namespace Tp_Pweb_22_23.Controllers
                 var users = new List<ApplicationUser>();
                 if (activo == false)
                 {
-                    users = await _userManager.Users.Where(u => u.IsActive == false).ToListAsync();
+                    users = await _userManager.Users.Include("Empresa").Where(u => u.IsActive == false).ToListAsync();
                 }
                 else if (activo == true)
-                    users = await _userManager.Users.Where(u => u.IsActive == true).ToListAsync();
+                    users = await _userManager.Users.Include("Empresa").Where(u => u.IsActive == true).ToListAsync();
                 else
-                    users = await _userManager.Users.ToListAsync();
+                    users = await _userManager.Users.Include("Empresa").ToListAsync();
                 foreach (var user in users)
                 {
                         UserRolesViewModel userRolesViewModel = new UserRolesViewModel();
-
+                    if(user.Empresa != null)
+                        userRolesViewModel.EmpresaNome = user.Empresa.Nome;
+                        
                         userRolesViewModel.Avatar = user.Avatar;
                         userRolesViewModel.UserId = user.Id;
                         userRolesViewModel.UserName = user.UserName;
@@ -81,17 +84,18 @@ namespace Tp_Pweb_22_23.Controllers
                 var users = new List<ApplicationUser>();
                 if (activo == false)
                 {
-                    users = await _context.Users.Where(c => c.EmpresaId == UtilizadorAtual.EmpresaId && c.EmpresaId != null && c.IsActive == false).ToListAsync();
+                    users = await _context.Users.Include("Empresa").Where(c => c.EmpresaId == UtilizadorAtual.EmpresaId && c.EmpresaId != null && c.IsActive == false).ToListAsync();
                 }
                 else if (activo == true)
-                    users = await _context.Users.Where(c => c.EmpresaId == UtilizadorAtual.EmpresaId && c.EmpresaId != null && c.IsActive == true).ToListAsync();
+                    users = await _context.Users.Include("Empresa").Where(c => c.EmpresaId == UtilizadorAtual.EmpresaId && c.EmpresaId != null && c.IsActive == true).ToListAsync();
                 else
-                    users = await _context.Users.Where(c => c.EmpresaId == UtilizadorAtual.EmpresaId && c.EmpresaId != null).ToListAsync();
+                    users = await _context.Users.Include("Empresa").Where(c => c.EmpresaId == UtilizadorAtual.EmpresaId && c.EmpresaId != null).ToListAsync();
 
                 foreach (var user in users)
                 {
                         UserRolesViewModel userRolesViewModel = new UserRolesViewModel();
 
+                        userRolesViewModel.EmpresaNome = user.Empresa.Nome;
                         userRolesViewModel.Avatar = user.Avatar;
                         userRolesViewModel.UserId = user.Id;
                         userRolesViewModel.UserName = user.UserName;
@@ -110,7 +114,7 @@ namespace Tp_Pweb_22_23.Controllers
             return new List<string>(await _userManager.GetRolesAsync(user));
         }
 
-        //TODO nao esta a dar
+        [Authorize(Roles = "Gestor,Admin")]
         public async Task<IActionResult> Details(string? id)
         {
             if (id == null || _context.Users == null)
@@ -129,45 +133,10 @@ namespace Tp_Pweb_22_23.Controllers
         }
 
 
-        //[HttpPost]
-        //public async Task<IActionResult> Details(string UserId)
-        //{
-        //    if (UserId == null || _context.Users == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var user = _context.Users.Where(c => c.Id == UserId);
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(user);
-        //}
-
-
-        [Authorize(Roles = "Gestor")]
+        [Authorize(Roles = "Gestor,Admin")]
         // GET: UserManager/Create
         public IActionResult Create()
         {
-            //var gestor = _context.Users.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            //if (gestor == null || gestor.EmpresaId == null)
-            //{
-            //    return NotFound();
-            //}
-            //var user = new ApplicationUser
-            //{
-            //    PrimeiroNome = gestor.Empresa.Nome,
-            //    UltimoNome = "Funcionario",
-            //    UserName = 
-            //    EmpresaId = gestor.EmpresaId
-            //};
-
-            //result = await _userManager.AddToRolesAsync(user,
-            //    model.Where(x => x.Selected).Select(y => y.RoleName));
-
-
             ViewData["Roles"] = new SelectList(new String[] { "Gestor", "Funcionario" });
             return View();
         }
@@ -177,7 +146,7 @@ namespace Tp_Pweb_22_23.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Gestor")]
+        [Authorize(Roles = "Gestor,Admin")]
         public async Task<IActionResult> Create([Bind("Email,PrimeiroNome,UltimoNome,Password,Activo,Role")] CriarFuncionarioViewModel criarUtilizador)
         {
             ViewData["Roles"] = new SelectList(new String[] { "Gestor", "Funcionario" });
@@ -210,9 +179,9 @@ namespace Tp_Pweb_22_23.Controllers
                     //return View(createUser);
                 }
                 await _userManager.AddToRoleAsync(user, criarUtilizador.Role);
-                TempData["Info"] = String.Format(
-                    "Profile for employee '{0} {1}' was created. " +
-                    "He/she can now login with Username '{2}' and Password '{3}'.",
+                TempData["Msg"] = String.Format(
+                    "Perfil de Funcionário '{0} {1}' foi criado. " +
+                    "O login pode ser realizado com o email '{2}' e Password '{3}'.",
                     user.PrimeiroNome, user.UltimoNome, user.UserName, criarUtilizador.Password);
 
             }
@@ -220,6 +189,7 @@ namespace Tp_Pweb_22_23.Controllers
         }
 
         // GET: UserManager/Edit/5
+        [Authorize(Roles = "Gestor,Admin")]
         public async Task<IActionResult> Edit(string? id)
         {
             if (id == null || _context.Users == null)
@@ -252,6 +222,7 @@ namespace Tp_Pweb_22_23.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Gestor,Admin")]
         public async Task<IActionResult> Edit(string id, [Bind("Id,PrimeiroNome,UltimoNome,Activo")] EditFuncionarioViewModel editUser)
         {
             var user = await _context.Users.FindAsync(id);
@@ -270,35 +241,11 @@ namespace Tp_Pweb_22_23.Controllers
             }
             catch (DbUpdateConcurrencyException e)
             {
-                TempData["Error"] = "Error while editing User: " + e.Message;
+                TempData["Erro"] = "Erro ao editar o utilizador: " + e.Message;
             }
 
             return RedirectToAction(nameof(Index));
         }
-
-        //// GET: UserManager/Delete/5
-        //public async Task<IActionResult> Delete(string? id)
-        //{
-        //    if (id == null || _context.Users == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var user = await _context.Users
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (user.UserName == User.Identity.Name)
-        //    {
-        //        TempData["Error"] = "You cannot delete your own profile!";
-        //        return RedirectToAction("Index");
-        //    }
-
-        //    return View(user);
-        //}
     }
 
 }

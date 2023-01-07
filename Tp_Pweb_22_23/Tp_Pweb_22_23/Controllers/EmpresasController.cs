@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -26,12 +28,14 @@ namespace Tp_Pweb_22_23.Controllers
         }
 
         // GET: Empresas
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
               return View(await _context.Empresa.ToListAsync());
         }
 
         // GET: Empresas/Details/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Empresa == null)
@@ -70,6 +74,7 @@ namespace Tp_Pweb_22_23.Controllers
         }
 
         // GET: Empresas/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -80,6 +85,7 @@ namespace Tp_Pweb_22_23.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("Id,Nome,Ativo")] Empresa empresa)
         {
             if (ModelState.IsValid)
@@ -106,14 +112,14 @@ namespace Tp_Pweb_22_23.Controllers
                 {
                     await _userManager.CreateAsync(GestorEmpresa, "Gestor..00");
                     await _userManager.AddToRoleAsync(GestorEmpresa, Roles.Gestor.ToString());
-                    TempData["Info"] = String.Format(
+                    TempData["Msg"] = String.Format(
                     "A Empresa '{0}' foi criada com Sucesso. " +
                     "O Gestor pode agora fazer login a partir do email '{1}' e Password 'Gestor..00'. " +
                     "É aconselhavel que altere a Password!",
                     empresa.Nome, empresa.Nome + "@gestor.com");
                 }
                 else
-                    TempData["Info"] = String.Format(
+                    TempData["Msg"] = String.Format(
                     "A Empresa '{0}' foi criada com Sucesso. " +
                     "O Gestor pode agora fazer login a partir do email '{1}' e Password 'Gestor..00'. " +
                     "É aconselhavel que altere a Password!",
@@ -126,6 +132,7 @@ namespace Tp_Pweb_22_23.Controllers
         }
 
         // GET: Empresas/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Empresa == null)
@@ -146,6 +153,7 @@ namespace Tp_Pweb_22_23.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Classificacao,Ativo")] Empresa empresa)
         {
             if (id != empresa.Id)
@@ -177,6 +185,7 @@ namespace Tp_Pweb_22_23.Controllers
         }
 
         // GET: Empresas/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Empresa == null)
@@ -217,6 +226,7 @@ namespace Tp_Pweb_22_23.Controllers
         // POST: Empresas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Empresa == null)
@@ -228,7 +238,7 @@ namespace Tp_Pweb_22_23.Controllers
             {
                 if(await CheckVeiculosEmpresa(id) == true)
                 {
-                    TempData["Error"] = String.Format("A Empresa '{0}' possui Veiculos por isso não pode ser apagada",empresa.Nome);
+                    TempData["Erro"] = String.Format("A Empresa '{0}' possui Veiculos por isso não pode ser apagada",empresa.Nome);
                     return RedirectToAction(nameof(Delete));
                 }
                 await DeleteUsersAsync(id);

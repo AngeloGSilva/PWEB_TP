@@ -139,12 +139,12 @@ namespace Tp_Pweb_22_23.Controllers
                 }
                 else
                 {
-                    TempData["Error"] = String.Format("Utilizador sem autoridade para realizar operacao");
+                    TempData["Erro"] = String.Format("Utilizador sem autoridade para realizar operacao");
                 }
             }
             else
             {
-                TempData["Error"] = String.Format("Reserva nao se encontra pendente");
+                TempData["Erro"] = String.Format("Reserva nao se encontra pendente");
             }
             return RedirectToAction(nameof(Index));
         }
@@ -169,12 +169,12 @@ namespace Tp_Pweb_22_23.Controllers
                 }
                 else
                 {
-                    TempData["Error"] = String.Format("Utilizador sem autoridade para realizar operacao");
+                    TempData["Erro"] = String.Format("Utilizador sem autoridade para realizar operacao");
                 }
             }
             else
             {
-                TempData["Error"] = String.Format("Reserva nao se encontra pendente");
+                TempData["Erro"] = String.Format("Reserva nao se encontra pendente");
             }
             return RedirectToAction(nameof(Index));
         }
@@ -197,12 +197,12 @@ namespace Tp_Pweb_22_23.Controllers
                 }
                 else
                 {
-                    TempData["Error"] = String.Format("Utilizador sem autoridade para realizar operacao");
+                    TempData["Erro"] = String.Format("Utilizador sem autoridade para realizar operacao");
                 }
             }
             else
             {
-                TempData["Error"] = String.Format("Reserva nao se encontra em Recolha ou em Entrega");
+                TempData["Erro"] = String.Format("Reserva nao se encontra em Recolha ou em Entrega");
             }
 
             return RedirectToAction(nameof(Index));
@@ -214,90 +214,91 @@ namespace Tp_Pweb_22_23.Controllers
         }
 
 
-        // GET: Reservas/Create
-        [Authorize(Roles = "Admin")]
-        public IActionResult Create()
-        {
-            ViewData["ClienteId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["VeiculoId"] = new SelectList(_context.Veiculo, "Id", "Id");
-            return View();
-        }
+        //// GET: Reservas/Create
+        //[Authorize(Roles = "Gestor,Funcionario")]
+        //public IActionResult Create()
+        //{
+        //    ViewData["ClienteId"] = new SelectList(_context.Users, "Id", "Id");
+        //    ViewData["VeiculoId"] = new SelectList(_context.Veiculo, "Id", "Id");
+        //    return View();
+        //}
 
-        // POST: Reservas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Estado,DataRecolha,DataEntrega,VeiculoId,ClienteId")] Reserva reserva)
-        {
-            if (ModelState.IsValid)
-            {
-                reserva.Veiculo = await _context.Veiculo.Where(v => v.Id == reserva.VeiculoId).FirstAsync();
-                _context.Add(reserva);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["ClienteId"] = new SelectList(_context.Users, "Id", "Id", reserva.ClienteId);
-            ViewData["VeiculoId"] = new SelectList(_context.Veiculo, "Id", "Id", reserva.VeiculoId);
-            return View(reserva);
-        }
+        //// POST: Reservas/Create
+        //// To protect from overposting attacks, enable the specific properties you want to bind to.
+        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("Id,Estado,DataRecolha,DataEntrega,VeiculoId,ClienteId")] Reserva reserva)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        reserva.Veiculo = await _context.Veiculo.Where(v => v.Id == reserva.VeiculoId).FirstAsync();
+        //        _context.Add(reserva);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["ClienteId"] = new SelectList(_context.Users, "Id", "Id", reserva.ClienteId);
+        //    ViewData["VeiculoId"] = new SelectList(_context.Veiculo, "Id", "Id", reserva.VeiculoId);
+        //    return View(reserva);
+        //}
 
-        // GET: Reservas/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Reserva == null)
-            {
-                return NotFound();
-            }
+        //// GET: Reservas/Edit/5
+        //public async Task<IActionResult> Edit(int? id)
+        //{
+        //    if (id == null || _context.Reserva == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var reserva = await _context.Reserva.FindAsync(id);
-            if (reserva == null)
-            {
-                return NotFound();
-            }
-            ViewData["ClienteId"] = new SelectList(_context.Users, "Id", "Id", reserva.ClienteId);
-            ViewData["VeiculoId"] = new SelectList(_context.Veiculo, "Id", "Id", reserva.VeiculoId);
-            return View(reserva);
-        }
+        //    var reserva = await _context.Reserva.FindAsync(id);
+        //    if (reserva == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    ViewData["ClienteId"] = new SelectList(_context.Users, "Id", "Id", reserva.ClienteId);
+        //    ViewData["VeiculoId"] = new SelectList(_context.Veiculo, "Id", "Id", reserva.VeiculoId);
+        //    return View(reserva);
+        //}
 
-        // POST: Reservas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Estado,DataRecolha,DataEntrega,VeiculoId,ClienteId")] Reserva reserva)
-        {
-            if (id != reserva.Id)
-            {
-                return NotFound();
-            }
+        //// POST: Reservas/Edit/5
+        //// To protect from overposting attacks, enable the specific properties you want to bind to.
+        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Edit(int id, [Bind("Id,Estado,DataRecolha,DataEntrega,VeiculoId,ClienteId")] Reserva reserva)
+        //{
+        //    if (id != reserva.Id)
+        //    {
+        //        return NotFound();
+        //    }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(reserva);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ReservaExists(reserva.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["ClienteId"] = new SelectList(_context.Users, "Id", "Id", reserva.ClienteId);
-            ViewData["VeiculoId"] = new SelectList(_context.Veiculo, "Id", "Id", reserva.VeiculoId);
-            return View(reserva);
-        }
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            _context.Update(reserva);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!ReservaExists(reserva.Id))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["ClienteId"] = new SelectList(_context.Users, "Id", "Id", reserva.ClienteId);
+        //    ViewData["VeiculoId"] = new SelectList(_context.Veiculo, "Id", "Id", reserva.VeiculoId);
+        //    return View(reserva);
+        //}
 
         // GET: Reservas/Delete/5
+        [Authorize(Roles = "Gestor,Funcionario,Cliente")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Reserva == null)
@@ -313,6 +314,11 @@ namespace Tp_Pweb_22_23.Controllers
             {
                 return NotFound();
             }
+            var user = GetCurrentUser();
+            if (reserva.ClienteId != user.Id) 
+            {
+                return NotFound();
+            }
 
             return View(reserva);
         }
@@ -320,15 +326,23 @@ namespace Tp_Pweb_22_23.Controllers
         // POST: Reservas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Gestor,Funcionario,Cliente")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Reserva == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.Reserva'  is null.");
             }
-            var reserva = await _context.Reserva.FindAsync(id);
+            var reserva = await _context.Reserva.Include("Veiculo").Where(r=> r.Id == id).FirstOrDefaultAsync();
             if (reserva != null)
             {
+                var user = GetCurrentUser();
+                if (User.IsInRole("Cliente") && reserva.ClienteId != user.Id)
+                {
+                    return NotFound();
+                }
+                //}else if(User.IsInRole("Funcionario,Gestor") && user.EmpresaId != reserva.Veiculo.idEmpresa)
+                //    return NotFound();
                 _context.Reserva.Remove(reserva);
             }
 

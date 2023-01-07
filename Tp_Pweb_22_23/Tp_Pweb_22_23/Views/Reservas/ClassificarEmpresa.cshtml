@@ -5,16 +5,18 @@
     ViewData["Title"] = "Classifica Empresa";
 }
 
-<h1>Os nossos Automóveis</h1>
+<div class="text-center">
+    <h1>Classificar</h1>
 
-<div class="row row-cols-1 row-cols-md-3 g-4">
+    <div>
         <div class="col">
-            <div class="card h-65 align-items-center">
-                <div class="card-body align-items-center">
-                    <h5 class="card-title align-items-center">Marca: @Model.veiculo.Marca</h5>
-                <h5 class="card-title align-items-center">Modelo: @Model.veiculo.Modelo</h5>
-                    <h7 class="card-text align-items-center">
-                        Total pago @Model.reserva.Total €<br />
+            <div class="card" style="max-width:300px; margin:auto;">
+                <div class="card-body">
+                    <h5 class="card-title">Marca: @Model.veiculo.Marca</h5>
+                    <h5 class="card-title">Modelo: @Model.veiculo.Modelo</h5>
+                    <h6 class="card-title">Empresa: @Model.empresa.Nome</h6>
+                    <h7 class="card-text">
+                        Total pago: @Model.reserva.Total€<br />
                     </h7>
                     <h7>@Model.empresa.Classificacao (@Model.empresa.NrClassificacoes)</h7>
 
@@ -24,17 +26,18 @@
                 </div>
             </div>
         </div>
+    </div>
+    <form style="max-width:300px; margin:auto;" method="get" asp-action="Classificar" asp-controller="Reservas">
+        <div class="form-group">
+            <label class="control-label"></label>
+            <input type="hidden" name="idEmpresa" class="form-control" value="@Model.empresa.Id" />
+        </div>
+        <div class="form-group">
+            <label class="control-label"></label>
+            <input name="avaliacao" type="number" class="form-control" placeholder="Classificao" min="1" max="5" />
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Classificar" class="btn btn-primary" />
+        </div>
+    </form>
 </div>
-<form method="get" asp-action="Classificar" asp-controller="Reservas">
-    <div class="form-group">
-        <label class="control-label"></label>
-        <input type="hidden" name="idEmpresa" class="form-control" value="@Model.empresa.Id" />@Model.empresa.Id
-    </div>
-    <div class="form-group">
-        <label class="control-label">Classificao</label>
-        <input name="avaliacao" type="number" class="form-control" />
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Criar" class="btn btn-primary" />
-    </div>
-</form>

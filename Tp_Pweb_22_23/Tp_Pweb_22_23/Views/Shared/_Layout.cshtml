@@ -94,20 +94,20 @@
     </header>
     <main class="container mt-5 pt-5 text-start">
         <div class="container-fluid">
-            @if (@TempData["Error"] != null)
+            @if (@TempData["Erro"] != null)
             {
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <p>
-                        <strong>@TempData["Error"]</strong>
+                        <strong>@TempData["Erro"]</strong>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </p>
                 </div>
             }
-            @if (@TempData["Info"] != null)
+            @if (@TempData["Msg"] != null)
             {
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <p>
-                        <strong>@TempData["Info"]</strong>
+                        <strong>@TempData["Msg"]</strong>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </p>
                 </div>

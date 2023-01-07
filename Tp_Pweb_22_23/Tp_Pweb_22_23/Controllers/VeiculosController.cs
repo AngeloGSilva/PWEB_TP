@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Drawing;
 using Tp_Pweb_22_23.Data;
 using Tp_Pweb_22_23.Models;
@@ -48,7 +50,7 @@ namespace Tp_Pweb_22_23.Controllers
             var veiculos = new AllVeiculosViewModel();
             ViewData["EmpresaId"] = new SelectList(_context.Empresa.ToList(), "Id", "Nome");
             //veiculos.ListaDeVeiculos = await _context.Veiculo.Where(c => c.Disponivel == true).ToListAsync();
-            veiculos.ListaDeVeiculos = await _context.Veiculo.Where(v => _context.Empresa.Any(e => e.Id == v.idEmpresa && e.Ativo == true) && v.Disponivel == true).ToListAsync();
+            veiculos.ListaDeVeiculos = await _context.Veiculo.Include("Categoria").Where(v => _context.Empresa.Any(e => e.Id == v.idEmpresa && e.Ativo == true) && v.Disponivel == true).ToListAsync();
             veiculos.NumResultados = veiculos.ListaDeVeiculos.Count;
             return View(veiculos);
         }
@@ -110,6 +112,7 @@ namespace Tp_Pweb_22_23.Controllers
             return View(veiculo);
         }
 
+        [Authorize(Roles = "Funcionario,Gestor")]
         // GET: Veiculos/Create
         public IActionResult Create()
         {
@@ -123,13 +126,14 @@ namespace Tp_Pweb_22_23.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Funcionario,Gestor")]
         public async Task<IActionResult> Create([Bind("Id,Foto,Marca,Disponivel,Modelo,Localizacao,Preco,idCategoria")] Veiculo veiculo, IFormFile FotoVeiculo)
         {
             var funcionario = GetCurrentUser();
 
             if (FotoVeiculo == null)
             {
-                TempData["Error"] = String.Format("Precisa de Colocar foto");
+                TempData["Erro"] = String.Format("Precisa de Colocar foto");
                 return RedirectToAction(nameof(Create));
             }
             //var user = _userManage.
@@ -147,14 +151,14 @@ namespace Tp_Pweb_22_23.Controllers
                     veiculo.Empresa = funcionario.Empresa;
                     var categoria = await _context.Categoria.Where(c => c.Id == veiculo.idCategoria).FirstAsync();
                     veiculo.Categoria = categoria;
-                    //TempData["Info"] = String.Format("Categoria a null ");
+                    //TempData["Msg"] = String.Format("Categoria a null ");
                     _context.Add(veiculo);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    TempData["Error"] = String.Format("Imagem demasiado Grande.");
+                    TempData["Erro"] = String.Format("Imagem demasiado Grande.");
                     return View(veiculo);
                 }
             }
@@ -162,6 +166,7 @@ namespace Tp_Pweb_22_23.Controllers
         }
 
         // GET: Veiculos/Edit/5
+        [Authorize(Roles = "Funcionario,Gestor")]
         public async Task<IActionResult> Edit(int? id)
         {
             ViewData["CategoriaId"] = new SelectList(_context.Categoria.ToList(), "Id", "Nome");
@@ -183,6 +188,7 @@ namespace Tp_Pweb_22_23.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Funcionario,Gestor")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Marca,Disponivel,Modelo,Localizacao,Preco,idCategoria")] Veiculo veiculo)
         {
             if (id != veiculo.Id)
@@ -196,7 +202,7 @@ namespace Tp_Pweb_22_23.Controllers
             {
                 if(await CheckReservasVeiculoPendentes(veiculo.Id)) 
                 {
-                    TempData["Error"] = String.Format("O Veiculo '{0}' '{1}' não pode ser editado enquanto estiver incluido em reservas por concluir.", veiculo.Marca, veiculo.Modelo);
+                    TempData["Erro"] = String.Format("O Veiculo '{0}' '{1}' não pode ser editado enquanto estiver incluido em reservas por concluir.", veiculo.Marca, veiculo.Modelo);
                     //veiculoAnterior.Disponivel = true;
                     //RedirectToAction(nameof(Edit));
                 }
@@ -233,6 +239,7 @@ namespace Tp_Pweb_22_23.Controllers
         }
 
         // GET: Veiculos/Delete/5
+        [Authorize(Roles = "Funcionario,Gestor")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Veiculo == null)
@@ -291,7 +298,7 @@ namespace Tp_Pweb_22_23.Controllers
 
             if(await CheckReservasVeiculo(id) == true)
                 {
-                    TempData["Error"] = String.Format("O Veiculo '{0}' '{1}' não pode ser apagado enquanto estiver incluido em reservas por concluir.", veiculo.Marca, veiculo.Modelo);
+                    TempData["Erro"] = String.Format("O Veiculo '{0}' '{1}' não pode ser apagado enquanto estiver incluido em reservas por concluir.", veiculo.Marca, veiculo.Modelo);
                     return RedirectToAction(nameof(Delete));
                 }
 

@@ -28,6 +28,9 @@
                 @Html.DisplayNameFor(model => model.UltimoNome)
             </th>
             <th data-sortable="true" data-searchable="true">
+                @Html.DisplayNameFor(model => model.EmpresaNome)
+            </th>
+            <th data-sortable="true" data-searchable="true">
                 @Html.DisplayNameFor(model => model.Roles)
             </th>
             <th>
@@ -48,6 +51,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.UltimoNome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EmpresaNome)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Roles)

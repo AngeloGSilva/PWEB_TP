@@ -5,7 +5,7 @@
 }
 
 <style>
-    .img{
+    .img {
         max-height: 565px;
         max-width: 1000px;
     }
@@ -32,18 +32,18 @@
                 }
                 <div class="card-body text-center">
                     <h5 class="card-title ">@item.Marca @item.Modelo</h5>
+                    <h5 class="card-title ">@item.Categoria.Nome</h5>
                     <h7 class="card-text ">
-                        @item.Preco €/dia.<br /></h7>
+                        @item.Preco €/dia.<br />
+                    </h7>
                     <h7>@item.Empresa.Nome</h7>
-                    <br><br/>
-              
-                
+                    <br><br />
                     <a class="w-100 btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.Id"> Saber mais</a>
                 </div>
-                    <div class="card-footer w-100">
+                <div class="card-footer w-100">
                     <small class="text-muted">Localização: @item.Localizacao</small>
-                    </div>
                 </div>
             </div>
+        </div>
     }
 </div>

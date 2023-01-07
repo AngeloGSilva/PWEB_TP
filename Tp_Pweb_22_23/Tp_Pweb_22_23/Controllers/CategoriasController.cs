@@ -161,7 +161,7 @@ namespace Tp_Pweb_22_23.Controllers
             {
                 if (await CheckVeiculosCategorias(id) == true) 
                 {
-                    TempData["Error"] = String.Format("A Categoria '{0}' possui Veiculos por isso não pode ser apagada", categoria.Nome);
+                    TempData["Erro"] = String.Format("A Categoria '{0}' possui Veiculos por isso não pode ser apagada", categoria.Nome);
                     return RedirectToAction(nameof(Delete));
                 }
                 _context.Categoria.Remove(categoria);

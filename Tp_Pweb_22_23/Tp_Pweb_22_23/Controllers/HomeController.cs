@@ -5,6 +5,7 @@ using Microsoft.Win32;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Drawing;
 using System.Security.Claims;
 using System.Security.Principal;
 using Tp_Pweb_22_23.Data;
@@ -52,15 +53,24 @@ namespace Tp_Pweb_22_23.Controllers
             {
                 return true;
             }
-            else if (Entrega < reserva.DataEntrega && Recolha < reserva.DataEntrega)
+            else if (Recolha < reserva.DataRecolha && Entrega < reserva.DataRecolha)
             {
                 return true;
+            }
+            else if (Entrega < reserva.DataEntrega && Recolha < reserva.DataEntrega)
+            {
+                return false;
             }
             //verificar esta condicap
             else if (Recolha < reserva.DataEntrega)
             {
                 return false;
-            } else if (Recolha == reserva.DataEntrega) 
+            }
+            else if (Recolha == reserva.DataEntrega)
+            {
+                return false;
+            }
+            else if (Recolha == reserva.DataRecolha && Entrega == reserva.DataEntrega)
             {
                 return false;
             }
@@ -70,22 +80,13 @@ namespace Tp_Pweb_22_23.Controllers
 
         public async Task<IActionResult> SearchAsync([Bind("Localizacao,DataRecolha,DataEntrega,IdCategoria")] SearchViewModel search)
         {
-            //List<Veiculo> veiculosDisponiveis = new List<Veiculo>();
+            if ((!User.Identity.IsAuthenticated || User.IsInRole("Cliente"))) {
+                if (search.DataRecolha < search.DataEntrega) {
             var empresa = new Empresa();
             var searchResultados = new SearchResultadosViewModel();
             searchResultados.VeiculosDisponiveis = new List<Veiculo>();
             searchResultados.EmpresasVeiculos = new List<Empresa>();
             var numeroDeDias = GetNumeroDeDias((DateTime)search.DataRecolha, (DateTime)search.DataEntrega);
-
-            //if (search.DataRecolha == null && search.DataEntrega == null)
-            //{
-            //    searchResultados.VeiculosDisponiveis = await _context.Veiculo.Where(c => c.Disponivel == true && c.Localizacao.ToLower() == search.Localizacao.ToLower() && c.idCategoria == search.IdCategoria).ToListAsync();
-            //    searchResultados.DataEntrega = search.DataEntrega;
-            //    searchResultados.DataRecolha = search.DataRecolha;
-            //    return View(searchResultados);
-            //}
-            //else
-            //{
                 var veiculosDisponiveis = await _context.Veiculo.Where(c => c.Disponivel == true && c.Localizacao.ToLower() == search.Localizacao.ToLower() && c.idCategoria == search.IdCategoria).ToListAsync();
                 //IEnumerable<Veiculo> veiculosFinal;
                 //IEnumerable<Reserva> reservas = await _context.Reserva.ToListAsync();
@@ -120,8 +121,11 @@ namespace Tp_Pweb_22_23.Controllers
             //}
             searchResultados.DataEntrega = search.DataEntrega;
             searchResultados.DataRecolha = search.DataRecolha;
-            
-            return View(searchResultados);
+                    return View(searchResultados);
+                }else
+                    TempData["Erro"] = String.Format("Datas nao permitidas. ");
+            }
+            return View(nameof(Index));
         }
 
 
