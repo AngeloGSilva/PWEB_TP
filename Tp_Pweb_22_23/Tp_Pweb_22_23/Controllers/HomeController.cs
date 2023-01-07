@@ -80,49 +80,53 @@ namespace Tp_Pweb_22_23.Controllers
 
         public async Task<IActionResult> SearchAsync([Bind("Localizacao,DataRecolha,DataEntrega,IdCategoria")] SearchViewModel search)
         {
-            if ((!User.Identity.IsAuthenticated || User.IsInRole("Cliente"))) {
-                if (search.DataRecolha < search.DataEntrega) {
-            var empresa = new Empresa();
-            var searchResultados = new SearchResultadosViewModel();
-            searchResultados.VeiculosDisponiveis = new List<Veiculo>();
-            searchResultados.EmpresasVeiculos = new List<Empresa>();
-            var numeroDeDias = GetNumeroDeDias((DateTime)search.DataRecolha, (DateTime)search.DataEntrega);
-                var veiculosDisponiveis = await _context.Veiculo.Where(c => c.Disponivel == true && c.Localizacao.ToLower() == search.Localizacao.ToLower() && c.idCategoria == search.IdCategoria).ToListAsync();
-                //IEnumerable<Veiculo> veiculosFinal;
-                //IEnumerable<Reserva> reservas = await _context.Reserva.ToListAsync();
-                var flag = false; //para nao entrar no isValidDate mais q uma vez
-                foreach (var veiculo in veiculosDisponiveis)
+            if ((!User.Identity.IsAuthenticated || User.IsInRole("Cliente")))
+            {
+                if (search.DataRecolha < search.DataEntrega)
                 {
-                    flag = false;
-                    if (getReservasVeiculo(veiculo) != null)
+                    var empresa = new Empresa();
+                    var searchResultados = new SearchResultadosViewModel();
+                    searchResultados.VeiculosDisponiveis = new List<Veiculo>();
+                    searchResultados.EmpresasVeiculos = new List<Empresa>();
+                    var numeroDeDias = GetNumeroDeDias((DateTime)search.DataRecolha, (DateTime)search.DataEntrega);
+                    var veiculosDisponiveis = await _context.Veiculo.Where(c => c.Disponivel == true && c.Localizacao.ToLower() == search.Localizacao.ToLower() && c.idCategoria == search.IdCategoria).ToListAsync();
+                    //IEnumerable<Veiculo> veiculosFinal;
+                    //IEnumerable<Reserva> reservas = await _context.Reserva.ToListAsync();
+                    var flag = false; //para nao entrar no isValidDate mais q uma vez
+                    foreach (var veiculo in veiculosDisponiveis)
                     {
-                        foreach (var reserva in getReservasVeiculo(veiculo))
+                        flag = false;
+                        if (getReservasVeiculo(veiculo) != null)
                         {
-                            if (IsValidDate(search.DataRecolha, search.DataEntrega, reserva) && !flag)
+                            foreach (var reserva in getReservasVeiculo(veiculo))
                             {
-                                flag = true;
-                                searchResultados.EmpresasVeiculos.Add(await _context.Empresa.Where(e => e.Id == veiculo.idEmpresa).FirstAsync());
-                                searchResultados.VeiculosDisponiveis.Add(veiculo);
-                                searchResultados.Total = numeroDeDias * veiculo.Preco;
+                                if (IsValidDate(search.DataRecolha, search.DataEntrega, reserva) && !flag)
+                                {
+                                    flag = true;
+                                    searchResultados.EmpresasVeiculos.Add(await _context.Empresa.Where(e => e.Id == veiculo.idEmpresa).FirstAsync());
+                                    searchResultados.VeiculosDisponiveis.Add(veiculo);
+                                    searchResultados.Total = numeroDeDias * veiculo.Preco;
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        empresa = await _context.Empresa.Where(e => e.Id == veiculo.idEmpresa).FirstAsync();
-                        if (!searchResultados.EmpresasVeiculos.Contains(empresa)) {
-                            searchResultados.EmpresasVeiculos.Add(empresa);
+                        else
+                        {
+                            empresa = await _context.Empresa.Where(e => e.Id == veiculo.idEmpresa).FirstAsync();
+                            if (!searchResultados.EmpresasVeiculos.Contains(empresa))
+                            {
+                                searchResultados.EmpresasVeiculos.Add(empresa);
+                            }
+                            searchResultados.VeiculosDisponiveis.Add(veiculo);
+                            searchResultados.Total = numeroDeDias * veiculo.Preco;
                         }
-                        searchResultados.VeiculosDisponiveis.Add(veiculo);
-                        searchResultados.Total = numeroDeDias * veiculo.Preco;
                     }
-                }
 
-            //}
-            searchResultados.DataEntrega = search.DataEntrega;
-            searchResultados.DataRecolha = search.DataRecolha;
+                    //}
+                    searchResultados.DataEntrega = search.DataEntrega;
+                    searchResultados.DataRecolha = search.DataRecolha;
                     return View(searchResultados);
-                }else
+                }
+                else
                     TempData["Erro"] = String.Format("Datas nao permitidas. ");
             }
             return View(nameof(Index));
@@ -138,7 +142,7 @@ namespace Tp_Pweb_22_23.Controllers
             return user;
         }
 
-        private int GetNumeroDeDias(DateTime start,DateTime endDate) 
+        private int GetNumeroDeDias(DateTime start, DateTime endDate)
         {
             start = start.Date;
             endDate = endDate.Date;
@@ -164,7 +168,7 @@ namespace Tp_Pweb_22_23.Controllers
                 DataRecolha = reservaSolicitada.DataRecolha,
                 DataEntrega = reservaSolicitada.DataEntrega,
                 VeiculoId = reservaSolicitada.IdVeiculo,
-                Total = veiculo.Preco*numeroDays,
+                Total = veiculo.Preco * numeroDays,
                 Veiculo = veiculo,
                 ClienteId = GetCurrentUser().Id,
                 Cliente = GetCurrentUser()
