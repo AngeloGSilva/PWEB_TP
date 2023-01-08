@@ -106,7 +106,8 @@
 }
 else
 {
-    <h3>Sem veiculos disponíveis.</h3>
+    @*<p class="alert alert-info text-danger"> Não foram reportados Danos, por isso não estão disponiveis imagens!</p>*@
+    <h3 class="alert alert-info text-danger">Sem veiculos disponíveis.</h3>
     <br />
     <h6 class="text-center"> A apresentar resultados para o período: </h6>
     <h5 class="text-center"> @Model.DataRecolha?.ToString("dd MMMM yyyy") - @Model.DataEntrega?.ToString("dd MMMM yyyy") </h5>
