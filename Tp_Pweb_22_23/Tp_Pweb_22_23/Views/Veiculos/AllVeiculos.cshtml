@@ -16,6 +16,26 @@
 <br>
 <br />
 
+<div class="container text-center mb-1">
+    <div class="row row-cols-auto">
+        <h7>Ordenar por preço</h7>
+
+        <form method="post" asp-action="AllVeiculos" asp-controller="Veiculos" class="col">
+            <div>
+                <input type="hidden" name="ordem" class="form-control" value="asc">
+                <button type="submit" class="btn btn-outline-dark btn-sm">Ascendente</button>
+            </div>
+        </form>
+
+        <form method="post" asp-action="AllVeiculos" asp-controller="Veiculos" class="col">
+            <div>
+                <input type="hidden" name="ordem" class="form-control" value="desc">
+                <button type="submit" class="btn btn-outline-dark btn-sm">Descendente</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 
 <div class="row row-cols-1 row-cols-md-3 g-4">
     @foreach (var item in Model.ListaDeVeiculos)

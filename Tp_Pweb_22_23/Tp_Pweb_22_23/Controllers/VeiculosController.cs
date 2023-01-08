@@ -45,14 +45,30 @@ namespace Tp_Pweb_22_23.Controllers
             return false;
         }
 
-        public async Task<IActionResult> AllVeiculos() 
+        public async Task<IActionResult> AllVeiculos(string? ordem) 
         {
             var veiculos = new AllVeiculosViewModel();
             ViewData["EmpresaId"] = new SelectList(_context.Empresa.ToList(), "Id", "Nome");
             //veiculos.ListaDeVeiculos = await _context.Veiculo.Where(c => c.Disponivel == true).ToListAsync();
             veiculos.ListaDeVeiculos = await _context.Veiculo.Include("Categoria").Where(v => _context.Empresa.Any(e => e.Id == v.idEmpresa && e.Ativo == true) && v.Disponivel == true).ToListAsync();
             veiculos.NumResultados = veiculos.ListaDeVeiculos.Count;
-            return View(veiculos);
+            if (ordem == null)
+            {
+                return View(veiculos);
+            }
+            else if (ordem.Equals("asc"))
+            {
+                var list = veiculos.ListaDeVeiculos.OrderBy(x => x.Preco).ToList();
+                veiculos.ListaDeVeiculos = list;
+                return View(veiculos);
+            }
+            else if (ordem.Equals("desc"))
+            {
+                var list = veiculos.ListaDeVeiculos.OrderByDescending(x => x.Preco).ToList();
+                veiculos.ListaDeVeiculos = list;
+                return View(veiculos);
+            }
+            return View(nameof(AllVeiculos));
         }
 
 
